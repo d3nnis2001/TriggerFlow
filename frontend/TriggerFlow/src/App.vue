@@ -1,45 +1,61 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import drawflow from './components/drawflow.vue'
-</script>
-
 <template>
-   <drawflow/>
+    <div style="width: 80vw; height: 80vh">
+        <baklava-editor :view-model="baklava" />
+    </div>
 </template>
 
-<style>
-*,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
- 
-}
-html {
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  background: transparent;
-}
- body {
-  max-width: calc(100vw - 40px);
-  max-height:  calc(100vh - 40px);
-  margin: 20px;
-  padding: 0;
-  background: #181818;
-  color: #f7f7f7;
-}
+<script>
+import { defineComponent } from "vue";
+import {
+    EditorComponent,
+    useBaklava,
+    DependencyEngine,
+    applyResult,
+} from "baklavajs";
+import "@baklavajs/themes/dist/syrup-dark.css";
 
-#app {
-  margin: 0px;
-  border-radius: 8px; 
-  border: 1px solid #494949;
-  
-}
-.el-main {
-  padding: 0;
-}
+import { DisplayNode } from "./components/DisplayNode";
+import { MathNode } from "./components/MathNode";
+import { FileReader } from "./components/FileReader";
+import { TestNode } from "./components/TestNode";
+export default defineComponent({
+    components: {
+        "baklava-editor": EditorComponent,
+    },
+    setup() {
+        const baklava = useBaklava();
+        const engine = new DependencyEngine(baklava.editor);
 
-</style>
+        baklava.editor.registerNodeType(FileReader);
+        baklava.editor.registerNodeType(MathNode);
+        baklava.editor.registerNodeType(DisplayNode);
+        baklava.editor.registerNodeType(TestNode);
+
+        const token = Symbol();
+        engine.events.afterRun.subscribe(token, (result) => {
+            engine.pause();
+            applyResult(result, baklava.editor);
+            engine.resume();
+        });
+
+        engine.start();
+
+        // Add some nodes for demo purposes
+        function addNodeWithCoordinates(nodeType, x, y) {
+            const n = new nodeType();
+            baklava.displayedGraph.addNode(n);
+            n.position.x = x;
+            n.position.y = y;
+            return n;
+        }
+        const node1 = addNodeWithCoordinates(MathNode, 300, 140);
+        const node2 = addNodeWithCoordinates(DisplayNode, 550, 140);
+        baklava.displayedGraph.addConnection(
+            node1.outputs.result,
+            node2.inputs.value,
+        );
+
+        return { baklava };
+    },
+});
+</script>

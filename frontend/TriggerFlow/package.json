@@ -1,19 +1,23 @@
 {
-  "name": "drawflow-vue3-example",
+  "name": "triggerflow",
   "version": "0.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons": "^0.0.11",
-    "drawflow": "^0.0.51",
-    "element-plus": "^1.1.0-beta.24",
-    "vue": "^3.2.16"
+    "baklavajs": "^2.4.5",
+    "drawflow": "^0.0.59",
+    "element-plus": "^2.7.8",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.35",
+    "vue-router": "^4.3.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.9.3",
-    "vite": "^2.6.4"
+    "@vitejs/plugin-vue": "^5.0.5",
+    "vite": "^5.3.1"
   }
 }
