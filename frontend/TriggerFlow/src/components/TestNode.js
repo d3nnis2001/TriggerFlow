@@ -1,9 +1,12 @@
 import {
-  defineDynamicNode,
-  NodeInterface,
   NumberInterface,
   SelectInterface,
-} from "baklavajs";
+} from "@baklavajs/renderer-vue";
+
+import {
+  defineDynamicNode,
+  NodeInterface
+} from "@baklavajs/core";
 
 export const TestNode = defineDynamicNode({
   type: "TestNode",

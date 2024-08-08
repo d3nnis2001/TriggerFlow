@@ -9,11 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "baklavajs": "^2.4.5",
-    "drawflow": "^0.0.59",
+    "@baklavajs/core": "file:C:/Users/d3nni/Desktop/baklavajs/packages/core",
+    "@baklavajs/engine": "file:C:/Users/d3nni/Desktop/baklavajs/packages/engine",
+    "@baklavajs/interface-types": "file:C:/Users/d3nni/Desktop/baklavajs/packages/interface-types",
+    "@baklavajs/renderer-vue": "file:C:/Users/d3nni/Desktop/baklavajs/packages/renderer-vue",
+    "@baklavajs/themes": "file:C:/Users/d3nni/Desktop/baklavajs/packages/themes",
+    "@codemirror/autocomplete": "^6.18.0",
+    "@codemirror/commands": "^6.6.0",
+    "@codemirror/lang-python": "^6.1.6",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/view": "^6.30.0",
+    "@fortawesome/fontawesome-free": "^6.6.0",
+    "axios": "^1.7.3",
+    "codemirror": "^6.0.1",
     "element-plus": "^2.7.8",
     "pinia": "^2.1.7",
     "vue": "^3.4.35",
+    "vue-good-table-next": "^0.2.1",
     "vue-router": "^4.3.3"
   },
   "devDependencies": {

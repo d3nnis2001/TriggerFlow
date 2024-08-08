@@ -1,9 +1,12 @@
 import {
-  defineNode,
   TextInputInterface,
   ButtonInterface,
+} from "@baklavajs/renderer-vue";
+
+import {
+  defineNode,
   NodeInterface,
-} from "baklavajs";
+} from "@baklavajs/core";
 
 // Hilfsfunktion zum Erstellen des File-Input-Elements und Auswählen einer Datei
 function createFileInput(callback) {

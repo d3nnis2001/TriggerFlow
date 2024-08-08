@@ -1,4 +1,5 @@
-import { defineNode, NodeInterface, TextInterface } from "baklavajs";
+import { TextInterface } from "@baklavajs/renderer-vue";
+import { defineNode, NodeInterface } from "@baklavajs/core";
 
 export const DisplayNode = defineNode({
   type: "DisplayNode",

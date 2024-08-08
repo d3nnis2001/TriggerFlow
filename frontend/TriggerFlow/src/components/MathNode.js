@@ -1,20 +1,18 @@
 import {
-  defineNode,
-  NumberInterface,
-  SelectInterface,
-  NodeInterface,
   TextInterface,
+    FileInterface,
   TextInputInterface,
-} from "baklavajs";
+} from "@baklavajs/renderer-vue";
+
+import { defineNode } from "@baklavajs/core";
 
 export const MathNode = defineNode({
   type: "MathNode",
   title: "Math",
   inputs: {
-    name: () => new TextInputInterface("Name", "0001").setPort(false),
+    name:() => new FileInterface(),
   },
   outputs: {
-    tag: () => new TextInterface("Tag", ""),
   },
   calculate(inputs) {
     return {
