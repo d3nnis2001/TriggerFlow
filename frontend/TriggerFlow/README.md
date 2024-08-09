@@ -27,3 +27,7 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Ideas
+
+- Option to safe code with name and you can always just simply import it in any existing editor

@@ -9,11 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@baklavajs/core": "file:C:/Users/d3nni/Desktop/baklavajs/packages/core",
-    "@baklavajs/engine": "file:C:/Users/d3nni/Desktop/baklavajs/packages/engine",
-    "@baklavajs/interface-types": "file:C:/Users/d3nni/Desktop/baklavajs/packages/interface-types",
-    "@baklavajs/renderer-vue": "file:C:/Users/d3nni/Desktop/baklavajs/packages/renderer-vue",
-    "@baklavajs/themes": "file:C:/Users/d3nni/Desktop/baklavajs/packages/themes",
+    "@baklavajs/core": "file:/Users/dennisschielke/Desktop/Programming/baklavajs/packages/core",
+    "@baklavajs/engine": "file:/Users/dennisschielke/Desktop/Programming/baklavajs/packages/engine",
+    "@baklavajs/interface-types": "file:/Users/dennisschielke/Desktop/Programming/baklavajs/packages/interface-types",
+    "@baklavajs/renderer-vue": "file:/Users/dennisschielke/Desktop/Programming/baklavajs/packages/renderer-vue",
+    "@baklavajs/themes": "file:/Users/dennisschielke/Desktop/Programming/baklavajs/packages/themes",
     "@codemirror/autocomplete": "^6.18.0",
     "@codemirror/commands": "^6.6.0",
     "@codemirror/lang-python": "^6.1.6",
