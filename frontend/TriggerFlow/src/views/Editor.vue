@@ -6,6 +6,11 @@
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+            <div class="save-button">
+                <button @click="openSnippetManager">
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
             <div class="refresh-button">
                 <button @click="refreshOutput">
                     <i class="fas fa-sync-alt"></i>
@@ -31,10 +36,11 @@
 
 <script>
 import { onMounted, ref, watch } from "vue";
-import EditorComponent from "../components/EditorComponent.vue";
-import OutputComponent from "../components//OutputComponent.vue";
-import RightPanelComponent from "../components//RightPanelComponent.vue";
-import TableComponent from "../components/TableComponent.vue";
+import EditorComponent from "../components/EditorPage/EditorComponent.vue";
+import OutputComponent from "../components/EditorPage/OutputComponent.vue";
+import SnippetManagerComponent from "../components/EditorPage/SnippetManagerComponent.vue";
+import RightPanelComponent from "../components/EditorPage/RightPanelComponent.vue";
+import TableComponent from "../components/EditorPage/TableComponent.vue";
 import { runCode as apiRunCode } from "@/api/editor";
 import docsFunctions from "../assets/docs";
 
@@ -44,6 +50,7 @@ export default {
         OutputComponent,
         RightPanelComponent,
         TableComponent,
+        SnippetManagerComponent,
     },
     setup() {
         const code = ref("");
@@ -51,6 +58,15 @@ export default {
         const editorScrollTop = ref(0);
         const resizer = ref(null);
         const outputContainer = ref(null);
+        const showSnippetManager = ref(false);
+
+        function openSnippetManager() {
+            showSnippetManager.value = true;
+        }
+
+        function closeSnippetManager() {
+            showSnippetManager.value = false;
+        }
 
         function updateOutputs(newCode) {
             const newLines = newCode.split("\n");
@@ -135,6 +151,9 @@ export default {
             handleEditorScroll,
             resizer,
             outputContainer,
+            openSnippetManager,
+            closeSnippetManager,
+            showSnippetManager,
         };
     },
 };
