@@ -1,17 +1,11 @@
-# In der Datei: backend/app/model/code_snippet.py
-
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
+from app import db
 
-Base = declarative_base()
-
-class CodeSnippet(Base):
+class CodeSnippet(db.Model):
     __tablename__ = 'code_snippets'
-    # ID
-    name = Column(String(255), primary_key=True)
-    code = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    name = db.Column(db.String(255), primary_key=True)
+    code = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __init__(self, name, code):
         self.name = name

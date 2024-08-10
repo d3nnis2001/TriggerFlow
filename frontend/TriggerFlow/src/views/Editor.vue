@@ -2,7 +2,7 @@
     <div class="main-container">
         <div class="top-buttons">
             <div class="play-button">
-                <button @click="runCode">
+                <button @click="runTheCode">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
@@ -41,7 +41,7 @@ import OutputComponent from "../components/EditorPage/OutputComponent.vue";
 import SnippetManagerComponent from "../components/EditorPage/SnippetManagerComponent.vue";
 import RightPanelComponent from "../components/EditorPage/RightPanelComponent.vue";
 import TableComponent from "../components/EditorPage/TableComponent.vue";
-import { runCode as apiRunCode } from "@/api/editor";
+import { runCode as apiRunCode } from "../api/editor";
 import docsFunctions from "../assets/docs";
 
 export default {
@@ -81,7 +81,6 @@ export default {
                 }
             }
 
-            // Remove extra lines if new code is shorter
             if (newLines.length < oldLines) {
                 outputs.value.splice(
                     newLines.length,
@@ -94,11 +93,10 @@ export default {
             updateOutputs(newCode);
         });
 
-        async function runCode() {
+        async function runTheCode() {
             console.log("Running code");
             const result = await apiRunCode(code.value, 20);
-            outputs.value = result.split("\n");
-            updateOutputs(code.value);
+            console.log(result);
         }
 
         function refreshOutput() {
@@ -146,7 +144,7 @@ export default {
             outputs,
             editorScrollTop,
             docsFunctions,
-            runCode,
+            runTheCode,
             refreshOutput,
             handleEditorScroll,
             resizer,

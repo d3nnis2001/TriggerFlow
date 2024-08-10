@@ -8,7 +8,6 @@ def run_code():
     print("HELLO")
     code = request.form.get('code')
     line_count = request.form.get('linecount')
-
     output = execute_code(code)
 
     return jsonify({'output': output})
@@ -22,6 +21,7 @@ def refresh_code():
     output = execute_code(code, curr_col)
 
     return jsonify({'output': output})
+
 
 def execute_code(code, curr_col=None):
     try:

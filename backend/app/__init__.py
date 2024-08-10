@@ -1,9 +1,14 @@
 from flask import Flask
+from config import Config
+from .database import close_db
+from flask_cors import CORS
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
+    app.config.from_object(config_class)
+    CORS(app)
 
-    from .app import main
-    app.register_blueprint(main)
+    from .controller.editorController import editor_bp
+    app.register_blueprint(editor_bp)
 
     return app
