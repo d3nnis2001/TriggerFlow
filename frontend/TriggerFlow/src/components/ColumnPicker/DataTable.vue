@@ -3,116 +3,44 @@
         <h1>{{ tableName }}</h1>
 
         <div class="main-container">
-            <div class="column-controls">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Visible</th>
-                            <th>Position</th>
-                            <th>Name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(column, index) in columns"
-                            :key="index"
-                            class="column-control"
-                        >
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    v-model="column.visible"
-                                    :id="'col-' + index"
-                                />
-                            </td>
-                            <td>
-                                <select
-                                    v-model="column.position"
-                                    @change="reorderColumns"
-                                >
-                                    <option
-                                        v-for="n in columns.length"
-                                        :key="n"
-                                        :value="n - 1"
-                                    >
-                                        {{ n }}
-                                    </option>
-                                </select>
-                            </td>
-                            <td>
-                                <input
-                                    v-model="column.name"
-                                    @input="
-                                        updateColumnName(
-                                            index,
-                                            $event.target.value,
-                                        )
-                                    "
-                                />
-                            </td>
-                            <td>
-                                <button @click="duplicateColumn(index)">
-                                    Duplicate
-                                </button>
-                                <button @click="deleteColumn(index)">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <ColumnControls
+                :columns="columns"
+                @update-column-name="updateColumnName"
+                @reorder-columns="reorderColumns"
+                @duplicate-column="duplicateColumn"
+                @delete-column="deleteColumn"
+                @edit-column="editColumn"
+            />
 
-            <div class="data-view">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th
-                                v-for="column in visibleColumns"
-                                :key="column.id"
-                                @click="selectColumn(column)"
-                            >
-                                {{ column.name }}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(row, rowIndex) in data" :key="rowIndex">
-                            <td
-                                v-for="column in visibleColumns"
-                                :key="column.id"
-                                @click="selectColumn(column)"
-                            >
-                                {{ row[column.id] }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <DataView
+                :data="data"
+                :visibleColumns="visibleColumns"
+                @select-column="selectColumn"
+            />
 
-                <div v-if="selectedColumn" class="selected-column">
-                    <h2>{{ selectedColumn.name }}</h2>
-                    <div class="column-values">
-                        <div
-                            v-for="(value, index) in getColumnValues(
-                                selectedColumn,
-                            )"
-                            :key="index"
-                        >
-                            {{ value }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SelectedColumn
+                v-if="selectedColumn"
+                :column="selectedColumn"
+                :columnValues="getColumnValues(selectedColumn)"
+            />
         </div>
     </div>
 </template>
 
 <script>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import ColumnControls from "./ColumnControls.vue";
+import DataView from "./DataView.vue";
+import SelectedColumn from "./SelectedColumn.vue";
 
 export default {
     name: "DataTable",
+    components: {
+        ColumnControls,
+        DataView,
+        SelectedColumn,
+    },
     props: {
         initialData: {
             type: Array,
@@ -122,8 +50,13 @@ export default {
             type: String,
             default: "Data Table",
         },
+        rawCsvData: {
+            type: String,
+            required: true,
+        },
     },
     setup(props) {
+        const router = useRouter();
         const tableName = ref(props.initialTableName);
         const data = ref(props.initialData);
         const columns = ref([]);
@@ -199,6 +132,19 @@ export default {
             return data.value.map((row) => row[column.id]);
         };
 
+        const editColumn = (index) => {
+            const columnData = JSON.stringify(columns.value[index]);
+            router.push({
+                path: "/editor",
+                query: {
+                    columnIndex: index,
+                    columnData: columnData,
+                    tableData: JSON.stringify(data.value),
+                    rawCsvData: encodeURIComponent(props.rawCsvData),
+                },
+            });
+        };
+
         return {
             tableName,
             data,
@@ -211,6 +157,7 @@ export default {
             deleteColumn,
             selectColumn,
             getColumnValues,
+            editColumn,
         };
     },
 };
@@ -226,57 +173,57 @@ export default {
     gap: 20px;
 }
 
-.column-controls {
+:deep(.column-controls) {
     flex: 0 0 auto;
     max-height: 400px;
     overflow-y: auto;
 }
 
-.column-controls table {
+:deep(.column-controls table) {
     border-collapse: collapse;
 }
 
-.column-controls th,
-.column-controls td {
+:deep(.column-controls th),
+:deep(.column-controls td) {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
 
-.column-controls th {
+:deep(.column-controls th) {
     background-color: #f2f2f2;
 }
 
-.data-view {
+:deep(.data-view) {
     flex: 1;
     display: flex;
     gap: 20px;
 }
 
-.data-table {
+:deep(.data-table) {
     flex: 1;
     border-collapse: collapse;
 }
 
-.data-table th,
-.data-table td {
+:deep(.data-table th),
+:deep(.data-table td) {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
     cursor: pointer;
 }
 
-.data-table th {
+:deep(.data-table th) {
     background-color: #f2f2f2;
 }
 
-.selected-column {
+:deep(.selected-column) {
     flex: 0 0 200px;
     border-left: 1px solid #ddd;
     padding-left: 20px;
 }
 
-.column-values {
+:deep(.column-values) {
     max-height: 400px;
     overflow-y: auto;
 }

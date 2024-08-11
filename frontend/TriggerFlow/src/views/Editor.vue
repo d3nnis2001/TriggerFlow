@@ -29,7 +29,7 @@
             <RightPanelComponent :docs-functions="docsFunctions" />
         </div>
         <div class="bottom-section">
-            <table-component></table-component>
+            <table-component :data="tableData"></table-component>
         </div>
     </div>
 </template>
@@ -43,6 +43,8 @@ import RightPanelComponent from "../components/EditorPage/RightPanelComponent.vu
 import TableComponent from "../components/EditorPage/TableComponent.vue";
 import { runCode as apiRunCode } from "../api/editor";
 import docsFunctions from "../assets/docs";
+import { useRoute } from "vue-router";
+import Papa from "papaparse";
 
 export default {
     components: {
@@ -59,6 +61,9 @@ export default {
         const resizer = ref(null);
         const outputContainer = ref(null);
         const showSnippetManager = ref(false);
+        const route = useRoute();
+        const fileName = ref("");
+        const tableData = ref([]);
 
         function openSnippetManager() {
             showSnippetManager.value = true;
@@ -105,6 +110,29 @@ export default {
             updateOutputs(code.value);
         }
 
+        async function loadFileData() {
+            if (fileName.value) {
+                try {
+                    const response = await fetch(`/${fileName.value}`);
+                    const csvText = await response.text();
+
+                    Papa.parse(csvText, {
+                        header: true,
+                        dynamicTyping: true,
+                        complete: (results) => {
+                            tableData.value = results.data;
+                            code.value = `# File: ${fileName.value}\n\n# Your code here\n`;
+                        },
+                        error: (error) => {
+                            console.error("Error parsing CSV:", error);
+                        },
+                    });
+                } catch (error) {
+                    console.error("Error loading file:", error);
+                }
+            }
+        }
+
         function handleEditorScroll(scrollTop) {
             editorScrollTop.value = scrollTop;
         }
@@ -134,6 +162,10 @@ export default {
 
             onMounted(() => {
                 resizer.value.addEventListener("mousedown", startResize);
+                fileName.value = route.query.file || "";
+                if (fileName.value) {
+                    loadFileData();
+                }
             });
         }
 
@@ -150,6 +182,7 @@ export default {
             resizer,
             outputContainer,
             openSnippetManager,
+            tableData,
             closeSnippetManager,
             showSnippetManager,
         };

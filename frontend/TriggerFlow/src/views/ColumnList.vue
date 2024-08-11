@@ -1,45 +1,60 @@
 <template>
-    <DataTable :initialData="myData" initialTableName="My CSV Data" />
+    <div>
+        <DataTable
+            v-if="csvData.length"
+            :initialData="csvData"
+            initialTableName="BTCUSDT3600"
+            :rawCsvData="rawCsvData"
+        />
+        <p v-else-if="loading">Loading data...</p>
+        <p v-else>No data available</p>
+    </div>
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
 import DataTable from "../components/ColumnPicker/DataTable.vue";
+import Papa from "papaparse";
 
 export default {
     components: { DataTable },
-    data() {
+    setup() {
+        const csvData = ref([]);
+        const loading = ref(true);
+        const rawCsvData = ref("");
+
+        const loadCSV = async () => {
+            try {
+                const response = await fetch("/BTCUSDT3600.csv");
+                const csvText = await response.text();
+                rawCsvData.value = csvText;
+
+                Papa.parse(csvText, {
+                    header: true,
+                    dynamicTyping: true,
+                    complete: (results) => {
+                        csvData.value = results.data.slice(0, 500); // Only take the first 500 rows
+                        loading.value = false;
+                    },
+                    error: (error) => {
+                        console.error("Error parsing CSV:", error);
+                        loading.value = false;
+                    },
+                });
+            } catch (error) {
+                console.error("Error loading CSV:", error);
+                loading.value = false;
+            }
+        };
+
+        onMounted(() => {
+            loadCSV();
+        });
+
         return {
-            myData: [
-                { id: 1, name: "John", age: 30 },
-                { id: 2, name: "Jane", age: 25 },
-                { id: 3, name: "Susan", age: 35 },
-                { id: 4, name: "Chris", age: 40 },
-                { id: 5, name: "Dan", age: 28 },
-                { id: 6, name: "Mike", age: 33 },
-                { id: 7, name: "Tom", age: 22 },
-                { id: 8, name: "Kate", age: 27 },
-                { id: 9, name: "Sara", age: 32 },
-                { id: 10, name: "Paul", age: 29 },
-                { id: 11, name: "Jim", age: 31 },
-                { id: 12, name: "Sam", age: 26 },
-                { id: 13, name: "Tim", age: 34 },
-                { id: 14, name: "Rob", age: 39 },
-                { id: 15, name: "Ben", age: 24 },
-                { id: 9, name: "Sara", age: 32 },
-                { id: 10, name: "Paul", age: 29 },
-                { id: 11, name: "Jim", age: 31 },
-                { id: 12, name: "Sam", age: 26 },
-                { id: 13, name: "Tim", age: 34 },
-                { id: 14, name: "Rob", age: 39 },
-                { id: 15, name: "Ben", age: 24 },
-                { id: 9, name: "Sara", age: 32 },
-                { id: 10, name: "Paul", age: 29 },
-                { id: 11, name: "Jim", age: 31 },
-                { id: 12, name: "Sam", age: 26 },
-                { id: 13, name: "Tim", age: 34 },
-                { id: 14, name: "Rob", age: 39 },
-                { id: 15, name: "Ben", age: 24 },
-            ],
+            csvData,
+            loading,
+            rawCsvData,
         };
     },
 };

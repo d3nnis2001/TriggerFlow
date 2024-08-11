@@ -1,10 +1,17 @@
 import axios from "axios";
 
-export const runCode = async function runCode(code, lineCount) {
+export const runCode = async function runCode(
+  code,
+  lineCount,
+  tableName,
+  colName,
+) {
   try {
     const cred = new URLSearchParams();
     cred.append("code", code);
     cred.append("linecount", lineCount);
+    cred.append("tableName", tableName);
+    cred.append("colName", colName);
     return await axios.post("/api/editor/runCode", cred);
   } catch (error) {
     console.error("Unseen error when sending code:", error);
