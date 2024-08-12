@@ -21,8 +21,8 @@
     justify-content: space-evenly;
     align-items: center;
     background-color: #2E2E2E;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 
