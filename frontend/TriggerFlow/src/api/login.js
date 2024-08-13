@@ -4,7 +4,7 @@ export const checkLoginData = async function checkLoginData(email, password) {
     const cred = new URLSearchParams();
     cred.append("email", email);
     cred.append("password", password);
-    return await axios.post("/api/editor/checkLogin", cred);
+    return await axios.post("/api/login/checkLogin", cred);
   } catch (error) {
     console.error("Unseen error when logging in:", error);
     return false;

@@ -11,4 +11,6 @@ def create_app(config_class=Config):
     from .controller.editorController import editor_bp
     app.register_blueprint(editor_bp)
 
+    from .controller.loginController import login_bp
+    app.register_blueprint(login_bp)
     return app

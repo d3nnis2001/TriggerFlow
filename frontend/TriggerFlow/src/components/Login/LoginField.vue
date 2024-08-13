@@ -32,7 +32,7 @@ import { ElButton, ElInput } from "element-plus";
 import PasswordHideIcon from "../icons/PasswordHide.svg";
 import PasswordShowIcon from "../icons/PasswordShow.svg";
 import { checkLoginData } from "../../api/login";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
 export default {
     components: {
@@ -40,7 +40,7 @@ export default {
         ElButton,
     },
     setup() {
-        const route = useRoute();
+        const router = useRouter();
         const emailInput = ref("");
         const passInput = ref("");
         const showPassword = ref(false);
@@ -67,8 +67,8 @@ export default {
                     passInput.value,
                 );
                 console.log(response);
-                if (response) {
-                    route.push("/");
+                if (response.status == 200) {
+                    router.push("/overview");
                 } else {
                     throw new Error("Ungültige Anmeldedaten");
                 }
