@@ -13,4 +13,9 @@ def create_app(config_class=Config):
 
     from .controller.loginController import login_bp
     app.register_blueprint(login_bp)
+
+    from .controller.joblistController import joblist_bp
+    app.register_blueprint(joblist_bp)
+
+
     return app

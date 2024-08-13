@@ -21,6 +21,7 @@
 import { ref, computed, onMounted } from "vue";
 import SearchFilter from "../components/JobOverview/SearchFilter.vue";
 import JobCard from "../components/JobOverview/JobCard.vue";
+import { getAllJobs } from "../api/joblist";
 
 export default {
     components: {
@@ -28,24 +29,7 @@ export default {
         JobCard,
     },
     setup() {
-        const jobs = ref([
-            // Sample job data
-            {
-                id: 1,
-                name: "Job 1",
-                description: "Description for Job 1",
-                image: "path/to/image1.jpg",
-                date: new Date(),
-            },
-            {
-                id: 2,
-                name: "Job 2",
-                description: "Description for Job 2",
-                image: "path/to/image2.jpg",
-                date: new Date(Date.now() - 86400000),
-            },
-            // Add more jobs...
-        ]);
+        let jobs = ref([]);
 
         const searchQuery = ref("");
         const filterCriteria = ref("");
@@ -73,27 +57,26 @@ export default {
         });
 
         const filterJobs = () => {
-            // This function is called when search or filter changes
-            // The filtering is handled by the computed property
+            // TODO: Filter für Jobs
         };
 
         const loadJob = (job) => {
             console.log("Loading job:", job.name);
-            // Implement job loading logic
+            // TODO: Implement job loading logic
         };
 
         const editJob = (job) => {
             console.log("Editing job:", job.name);
-            // Implement job editing logic
+            // TODO: Implement job editing logic
         };
 
         const deleteJob = (job) => {
             console.log("Deleting job:", job.name);
-            // Implement job deletion logic
+            // TODO: Implement job deletion logic
         };
 
-        onMounted(() => {
-            // Initialize perfect-scrollbar or any other scrolling library if needed
+        onMounted(async () => {
+            jobs.value = await getAllJobs();
         });
 
         return {
