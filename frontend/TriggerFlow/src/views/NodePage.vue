@@ -1,54 +1,109 @@
-<script lang="ts" setup>
-import { h, ref } from "vue";
+<script setup>
+import { ref } from "vue";
+import { VueFlow, useVueFlow } from "@vue-flow/core";
 import { Background } from "@vue-flow/background";
-import { Controls } from "@vue-flow/controls";
+import { ControlButton, Controls } from "@vue-flow/controls";
 import { MiniMap } from "@vue-flow/minimap";
-import { VueFlow, useVueFlow, type Node, type Edge } from "@vue-flow/core";
-import CustomNode from "../components/Nodes/CustomNode.vue";
-import CustomEdge from "../components/Edges/CustomEdge.vue";
+import {
+    initialEdges,
+    initialNodes,
+} from "../components/NodePage/initial-elements.js";
+import Icon from "../components/NodePage/Icon.vue";
+import DropzoneBackground from "../components/NodePage/DropzoneBackground.vue";
+import Sidebar from "../components/NodePage/Sidebar.vue";
+import useDragAndDrop from "../components/NodePage/useDnD.js";
 
-const { onConnect, addEdges } = useVueFlow();
+const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject } =
+    useVueFlow();
 
-const nodes = ref<Node[]>([
-    { id: "1", type: "input", label: "Node 1", position: { x: 250, y: 5 } },
-    { id: "2", type: "output", label: "Node 2", position: { x: 100, y: 100 } },
-    { id: "3", type: "custom", label: "Node 3", position: { x: 400, y: 100 } },
-]);
+const { onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
 
-const edges = ref<Edge[]>([
-    { id: "e1-2", source: "1", target: "2", type: "custom" },
-    { id: "e1-3", source: "1", target: "3", animated: true },
-]);
+const nodes = ref(initialNodes);
 
-onConnect((params) => {
-    addEdges([params]);
+const edges = ref(initialEdges);
+
+const dark = ref(false);
+
+onInit((vueFlowInstance) => {
+    vueFlowInstance.fitView();
 });
+
+onNodeDragStop(({ event, nodes, node }) => {
+    console.log("Node Drag Stop", { event, nodes, node });
+});
+
+onConnect((connection) => {
+    addEdges(connection);
+});
+
+function updatePos() {
+    nodes.value = nodes.value.map((node) => {
+        return {
+            ...node,
+            position: {
+                x: Math.random() * 400,
+                y: Math.random() * 400,
+            },
+        };
+    });
+}
+
+function logToObject() {
+    console.log(toObject());
+}
+
+function resetTransform() {
+    setViewport({ x: 0, y: 0, zoom: 1 });
+}
+
+function toggleDarkMode() {
+    dark.value = !dark.value;
+}
 </script>
 
 <template>
-    <div style="height: 100vh">
-        <VueFlow
-            v-model:nodes="nodes"
-            v-model:edges="edges"
-            fit-view-on-init
-            class="vue-flow-basic-example"
-            :default-zoom="1.5"
-            :min-zoom="0.2"
-            :max-zoom="4"
+    <VueFlow
+        :nodes="nodes"
+        :edges="edges"
+        :class="{ dark }"
+        class="basic-flow"
+        :default-viewport="{ zoom: 1.5 }"
+        :min-zoom="0.2"
+        :max-zoom="4"
+        @dragover="onDragOver"
+        @dragleave="onDragLeave"
+        @drop="onDrop"
+    >
+        <DropzoneBackground
+            :style="{
+                backgroundColor: isDragOver ? '#e7f3ff' : 'transparent',
+                transition: 'background-color 0.2s ease',
+            }"
         >
-            <Background pattern-color="#aaa" :gap="8" />
+            <p v-if="isDragOver">Drop here</p>
+        </DropzoneBackground>
+        <Background pattern-color="#aaa" :gap="16" />
 
-            <MiniMap />
+        <MiniMap />
 
-            <Controls />
+        <Controls position="top-left">
+            <ControlButton title="Reset Transform" @click="resetTransform">
+                <Icon name="reset" />
+            </ControlButton>
 
-            <template #node-custom="nodeProps">
-                <CustomNode v-bind="nodeProps" />
-            </template>
+            <ControlButton title="Shuffle Node Positions" @click="updatePos">
+                <Icon name="update" />
+            </ControlButton>
 
-            <template #edge-custom="edgeProps">
-                <CustomEdge v-bind="edgeProps" />
-            </template>
-        </VueFlow>
-    </div>
+            <ControlButton title="Toggle Dark Mode" @click="toggleDarkMode">
+                <Icon v-if="dark" name="sun" />
+                <Icon v-else name="moon" />
+            </ControlButton>
+
+            <ControlButton title="Log `toObject`" @click="logToObject">
+                <Icon name="log" />
+            </ControlButton>
+        </Controls>
+    </VueFlow>
+    <Sidebar />
 </template>
