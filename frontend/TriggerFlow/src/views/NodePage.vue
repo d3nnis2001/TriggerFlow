@@ -1,9 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { ref, markRaw } from "vue";
 import { VueFlow, useVueFlow } from "@vue-flow/core";
 import { Background } from "@vue-flow/background";
 import { ControlButton, Controls } from "@vue-flow/controls";
-import { MiniMap } from "@vue-flow/minimap";
 import {
     initialEdges,
     initialNodes,
@@ -12,6 +11,9 @@ import Icon from "../components/NodePage/Icon.vue";
 import DropzoneBackground from "../components/NodePage/DropzoneBackground.vue";
 import Sidebar from "../components/NodePage/Sidebar.vue";
 import useDragAndDrop from "../components/NodePage/useDnD.js";
+import FileReader from "../components/Nodes/FileReader.vue";
+import Split from "../components/Nodes/Split.vue";
+import Merge from "../components/Nodes/Merge.vue";
 
 const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject } =
     useVueFlow();
@@ -36,18 +38,6 @@ onConnect((connection) => {
     addEdges(connection);
 });
 
-function updatePos() {
-    nodes.value = nodes.value.map((node) => {
-        return {
-            ...node,
-            position: {
-                x: Math.random() * 400,
-                y: Math.random() * 400,
-            },
-        };
-    });
-}
-
 function logToObject() {
     console.log(toObject());
 }
@@ -59,12 +49,19 @@ function resetTransform() {
 function toggleDarkMode() {
     dark.value = !dark.value;
 }
+
+const nodeTypes = {
+    filereader: markRaw(FileReader),
+    split: markRaw(Split),
+    merge: markRaw(Merge),
+};
 </script>
 
 <template>
     <VueFlow
         :nodes="nodes"
         :edges="edges"
+        :nodeTypes="nodeTypes"
         :class="{ dark }"
         class="basic-flow"
         :default-viewport="{ zoom: 1.5 }"
@@ -84,15 +81,9 @@ function toggleDarkMode() {
         </DropzoneBackground>
         <Background pattern-color="#aaa" :gap="16" />
 
-        <MiniMap />
-
         <Controls position="top-left">
             <ControlButton title="Reset Transform" @click="resetTransform">
                 <Icon name="reset" />
-            </ControlButton>
-
-            <ControlButton title="Shuffle Node Positions" @click="updatePos">
-                <Icon name="update" />
             </ControlButton>
 
             <ControlButton title="Toggle Dark Mode" @click="toggleDarkMode">
