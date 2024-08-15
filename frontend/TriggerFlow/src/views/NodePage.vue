@@ -14,6 +14,9 @@ import useDragAndDrop from "../components/NodePage/useDnD.js";
 import FileReader from "../components/Nodes/FileReader.vue";
 import Split from "../components/Nodes/Split.vue";
 import Merge from "../components/Nodes/Merge.vue";
+import EmailService from "../components/Nodes/EmailService.vue";
+import Editor from "../components/Nodes/Editor.vue";
+import Comment from "../components/Nodes/Comment.vue";
 
 const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject } =
     useVueFlow();
@@ -54,6 +57,9 @@ const nodeTypes = {
     filereader: markRaw(FileReader),
     split: markRaw(Split),
     merge: markRaw(Merge),
+    email: markRaw(EmailService),
+    editor: markRaw(Editor),
+    comment: markRaw(Comment),
 };
 </script>
 

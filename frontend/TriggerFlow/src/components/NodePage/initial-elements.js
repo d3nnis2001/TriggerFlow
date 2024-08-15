@@ -48,6 +48,13 @@ export const initialNodes = [
     position: { x: 800, y: 800 },
     class: "light",
   },
+  {
+    id: "8",
+    type: "comment",
+    data: { label: "Node 8" },
+    position: { x: 1000, y: 1000 },
+    class: "light",
+  },
 ];
 
 export const initialEdges = [

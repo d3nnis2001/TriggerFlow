@@ -64,6 +64,27 @@ const toggleSidebar = () => {
                 >
                     Merge
                 </div>
+                <div
+                    class="vue-flow__node-output"
+                    :draggable="true"
+                    @dragstart="onDragStart($event, 'email')"
+                >
+                    E-Mail Service
+                </div>
+                <div
+                    class="vue-flow__node-output"
+                    :draggable="true"
+                    @dragstart="onDragStart($event, 'editor')"
+                >
+                    Editor
+                </div>
+                <div
+                    class="vue-flow__node-output"
+                    :draggable="true"
+                    @dragstart="onDragStart($event, 'comment')"
+                >
+                    Kommentar
+                </div>
             </div>
         </div>
     </aside>
