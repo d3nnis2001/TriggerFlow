@@ -1,3 +1,4 @@
+import { Background } from "@vue-flow/background";
 import { MarkerType } from "@vue-flow/core";
 
 export const initialNodes = [
@@ -53,7 +54,7 @@ export const initialNodes = [
     type: "comment",
     data: { label: "Node 8" },
     position: { x: 1000, y: 1000 },
-    class: "light",
+    style: { Background: "#fff", border: "2px solid black" },
   },
 ];
 
