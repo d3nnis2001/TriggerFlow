@@ -1,8 +1,7 @@
 <template>
     <div class="outer-container">
-        <Header></Header>
+        <h1>Login</h1>
         <div class="side-content">
-            <QuickLogin></QuickLogin>
             <LoginField></LoginField>
         </div>
         <Footer></Footer>

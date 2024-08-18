@@ -70,5 +70,6 @@ export default {
     overflow-y: auto;
     font-family: "Fira Code", monospace;
     font-size: 14px;
+    text-align: start;
 }
 </style>

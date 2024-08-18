@@ -17,6 +17,8 @@ import Merge from "../components/Nodes/Merge.vue";
 import EmailService from "../components/Nodes/EmailService.vue";
 import Editor from "../components/Nodes/Editor.vue";
 import Comment from "../components/Nodes/Comment.vue";
+import TableComponentVue from "@/components/EditorPage/TableComponent.vue";
+import Rest from "@/components/Nodes/REST.vue";
 
 const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject } =
     useVueFlow();
@@ -60,6 +62,7 @@ const nodeTypes = {
     email: markRaw(EmailService),
     editor: markRaw(Editor),
     comment: markRaw(Comment),
+    rest: markRaw(Rest),
 };
 </script>
 

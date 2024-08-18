@@ -13,21 +13,21 @@ const body = ref("");
         <h2 style="color: black">Email Service</h2>
         <div class="email-form">
             <div class="form-group">
+                <label for="recipient">An:</label>
+                <input
+                    id="recipient"
+                    v-model="recipient"
+                    type="email"
+                    placeholder="Empfänger-Email"
+                />
+            </div>
+            <div class="form-group">
                 <label for="subject">Betreff:</label>
                 <input
                     id="subject"
                     v-model="subject"
                     type="text"
                     placeholder="Betreff eingeben"
-                />
-            </div>
-            <div class="form-group">
-                <label for="recipient">Anschrift:</label>
-                <input
-                    id="recipient"
-                    v-model="recipient"
-                    type="email"
-                    placeholder="Empfänger-Email"
                 />
             </div>
             <div class="form-group">

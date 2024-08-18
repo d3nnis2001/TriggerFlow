@@ -16,33 +16,9 @@ const toggleSidebar = () => {
             {{ isOpen ? ">>" : "<<" }}
         </button>
         <div v-if="isOpen" class="sidebar-content">
-            <div class="description">You can drag these nodes to the pane.</div>
+            <div class="description">Node Auswahl</div>
 
             <div class="nodes">
-                <div
-                    class="vue-flow__node-input"
-                    :draggable="true"
-                    @dragstart="onDragStart($event, 'input')"
-                >
-                    Input Node
-                </div>
-
-                <div
-                    class="vue-flow__node-default"
-                    :draggable="true"
-                    @dragstart="onDragStart($event, 'default')"
-                >
-                    Default Node
-                </div>
-
-                <div
-                    class="vue-flow__node-output"
-                    :draggable="true"
-                    @dragstart="onDragStart($event, 'output')"
-                >
-                    Output Node
-                </div>
-
                 <div
                     class="vue-flow__node-output"
                     :draggable="true"
@@ -85,6 +61,13 @@ const toggleSidebar = () => {
                 >
                     Kommentar
                 </div>
+                <div
+                    class="vue-flow__node-output"
+                    :draggable="true"
+                    @dragstart="onDragStart($event, 'rest')"
+                >
+                    REST Operation
+                </div>
             </div>
         </div>
     </aside>
@@ -93,6 +76,7 @@ const toggleSidebar = () => {
 <style scoped>
 aside {
     position: absolute;
+    color: #000000;
     right: 0;
     top: 0;
     bottom: 0;

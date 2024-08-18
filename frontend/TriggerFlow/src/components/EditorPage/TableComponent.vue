@@ -1,38 +1,14 @@
 <template>
-    <div class="table-container">
+    <div class="resizable-table-container" ref="container">
         <vue-good-table
             :columns="columns"
             :rows="rows"
-            :sort-options="{
-                enabled: true,
-            }"
-            :pagination-options="{
-                enabled: true,
-                perPage: 15,
-            }"
-            :search-options="{
-                enabled: true,
-            }"
-            :filter-options="{
-                enabled: true,
-                filterByColumn: true,
-            }"
-            :line-numbers="true"
-            styleClass="vgt-table condensed"
-            theme="nocturnal"
+            :sort-options="{ enabled: true }"
+            :pagination-options="{ enabled: true, perPage: 10 }"
+            style="width: 100%"
         >
-            <template #table-row="props">
-                <span v-if="props.column.field == 'col1'" class="custom-td">
-                    {{ props.row.col1 }}
-                </span>
-                <span
-                    v-else-if="props.column.field == 'col2'"
-                    class="custom-td"
-                >
-                    {{ props.row.col2 }}
-                </span>
-            </template>
         </vue-good-table>
+        <div class="resize-handle" ref="handle" @mousedown="startResize"></div>
     </div>
 </template>
 
@@ -41,96 +17,67 @@ import { VueGoodTable } from "vue-good-table-next";
 import "vue-good-table-next/dist/vue-good-table-next.css";
 
 export default {
-    components: {
-        VueGoodTable,
-    },
+    components: { VueGoodTable },
     data() {
         return {
             columns: [
-                {
-                    label: "Header 1",
-                    field: "col1",
-                    filterOptions: {
-                        enabled: true,
-                        placeholder: "Filter Header 1",
-                    },
-                },
-                {
-                    label: "Header 2",
-                    field: "col2",
-                    filterOptions: {
-                        enabled: true,
-                        placeholder: "Filter Header 2",
-                    },
-                },
-                // ... weitere Spalten
+                { label: "Name", field: "name" },
+                { label: "Alter", field: "age", type: "number" },
+                { label: "Stadt", field: "city" },
             ],
             rows: [
-                { col1: "Value 1", col2: "Value 2" },
-                // ... weitere Zeilen
+                { name: "John", age: 30, city: "New York" },
+                { name: "Jane", age: 25, city: "San Francisco" },
+                { name: "Tom", age: 35, city: "London" },
             ],
+            isDragging: false,
+            startY: 0,
+            startHeight: 0,
         };
+    },
+    methods: {
+        startResize(e) {
+            this.isDragging = true;
+            this.startY = e.clientY;
+            this.startHeight = this.$refs.container.offsetHeight;
+            document.addEventListener("mousemove", this.resize);
+            document.addEventListener("mouseup", this.stopResize);
+        },
+        resize(e) {
+            if (!this.isDragging) return;
+            const deltaY = e.clientY - this.startY;
+            const newHeight = this.startHeight + deltaY;
+            this.$refs.container.style.height = `${newHeight}px`;
+        },
+        stopResize() {
+            this.isDragging = false;
+            document.removeEventListener("mousemove", this.resize);
+            document.removeEventListener("mouseup", this.stopResize);
+        },
+    },
+    mounted() {
+        this.$refs.container.style.height = "400px"; // Anfangshöhe
     },
 };
 </script>
 
 <style scoped>
-.table-container {
-    max-width: 100%;
-    overflow-x: auto;
-}
-
-:deep(.vgt-table) {
-    font-size: 0.85rem;
-}
-
-:deep(.vgt-table th),
-:deep(.vgt-table td) {
-    padding: 0.5rem;
-}
-
-:deep(.vgt-table.nocturnal) {
-    background-color: #1e1e1e;
-    border-color: #2d2d2d;
-    color: #ffffff;
-}
-
-:deep(.vgt-table.nocturnal th) {
-    background-color: #2d2d2d;
-    border-color: #3a3a3a;
-    color: #ffffff;
-}
-
-:deep(.vgt-table.nocturnal td) {
-    border-color: #2d2d2d;
-}
-
-:deep(.vgt-table.nocturnal .vgt-input, .vgt-table.nocturnal .vgt-select) {
-    background-color: #2d2d2d;
-    color: #ffffff;
-    border-color: #3a3a3a;
-}
-
-:deep(.vgt-table.nocturnal .vgt-pagination) {
-    background-color: #1e1e1e;
-    color: #ffffff;
-}
-
-:deep(.vgt-table.nocturnal .page-link) {
-    background-color: #2d2d2d;
-    border-color: #3a3a3a;
-    color: #ffffff;
-}
-
-:deep(.vgt-table.nocturnal .page-link:hover) {
-    background-color: #3a3a3a;
-}
-
-:deep(.custom-td) {
-    display: block;
-    white-space: nowrap;
+.resizable-table-container {
+    position: relative;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px;
+    min-height: 200px;
+    resize: vertical;
+}
+.resize-handle {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-color: #ccc;
+    cursor: ns-resize;
+}
+.resize-handle:hover {
+    background-color: #999;
 }
 </style>
