@@ -1,6 +1,6 @@
 <script lang="js" setup>
 import { Handle, Position } from "@vue-flow/core";
-import LargeFileUpload from "./SubComponents/LargeFileUploader.vue";
+import LargeFileUpload from "./LargeFileUploader.vue";
 import { ref } from "vue";
 
 const uploadedFiles = ref([]);
