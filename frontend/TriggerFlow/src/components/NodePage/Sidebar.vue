@@ -68,6 +68,13 @@ const toggleSidebar = () => {
                 >
                     REST Operation
                 </div>
+                <div
+                    class="vue-flow__node-output"
+                    :draggable="true"
+                    @dragstart="onDragStart($event, 'upload')"
+                >
+                    File Uploader
+                </div>
             </div>
         </div>
     </aside>
