@@ -17,5 +17,8 @@ def create_app(config_class=Config):
     from .controller.joblistController import joblist_bp
     app.register_blueprint(joblist_bp)
 
+    from .controller.nodeController import nodes_bp
+    app.register_blueprint(nodes_bp)
+
 
     return app
