@@ -3,19 +3,22 @@
         <div class="top-buttons">
             <div class="play-button">
                 <button @click="runTheCode">
-                    <i class="fas fa-play"></i>
+                    <i class="pi pi-code"></i>
                 </button>
             </div>
-            <div class="save-button">
+            <div class="play-button">
                 <button @click="openSnippetManager">
-                    <i class="fas fa-save"></i>
+                    <i class="pi pi-save"></i>
                 </button>
             </div>
-            <div class="refresh-button">
+            <div class="play-button">
                 <button @click="refreshOutput">
-                    <i class="fas fa-sync-alt"></i>
+                    <i class="pi pi-refresh"></i>
                 </button>
             </div>
+        </div>
+        <div class="card flex justify-start">
+            <ToggleSwitch v-model="checked" />
         </div>
         <div class="top-section">
             <div class="editor-container">
@@ -26,7 +29,7 @@
                     :editor-scroll-top="editorScrollTop"
                 />
             </div>
-            <RightPanelComponent :docs-functions="docsFunctions" />
+            <RightPanelComponent :codeSnippets="docsFunctions" />
         </div>
         <div class="bottom-section">
             <table-component :data="tableData"></table-component>
@@ -45,6 +48,7 @@ import { runCode as apiRunCode } from "../api/editor";
 import docsFunctions from "../assets/docs";
 import { useRoute } from "vue-router";
 import Papa from "papaparse";
+import ToggleSwitch from 'primevue/toggleswitch';
 
 export default {
     components: {
@@ -53,6 +57,7 @@ export default {
         RightPanelComponent,
         TableComponent,
         SnippetManagerComponent,
+        ToggleSwitch,
     },
     setup() {
         const code = ref("");
@@ -64,6 +69,7 @@ export default {
         const route = useRoute();
         const fileName = ref("");
         const tableData = ref([]);
+        const checked = ref(false);
 
         function openSnippetManager() {
             showSnippetManager.value = true;
@@ -185,6 +191,7 @@ export default {
             tableData,
             closeSnippetManager,
             showSnippetManager,
+            checked,    
         };
     },
 };
@@ -195,7 +202,7 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    width: 80vw;
+    width: 100vw;
 }
 
 .top-section {
@@ -228,7 +235,6 @@ export default {
 
 .top-buttons {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 10px;
 }
 

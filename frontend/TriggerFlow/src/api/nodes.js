@@ -1,20 +1,4 @@
 import axios from "axios";
-import { useToast } from "primevue/usetoast";
-const toast = useToast();
-
-export const uploadFile = async function (file) {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    return await axios.post("/api/nodes/fileupload", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-  } catch (error) {
-    console.error("Fehler beim Hochladen der Datei:", error);
-    throw error;
-  }
-};
 
 export const getFilereader = async function (
   filename,
@@ -48,22 +32,11 @@ export const uploadFiles = async function (formData) {
     });
 
     if (response.status === 200) {
-      toast.add({
-        severity: "success",
-        summary: "Erfolg",
-        detail: "Dateien erfolgreich hochgeladen",
-        life: 3000,
-      });
+      console.log("Hat alles funktioniert");
     } else {
       throw new Error("Upload fehlgeschlagen");
     }
   } catch (error) {
     console.error("Fehler beim Hochladen:", error);
-    toast.add({
-      severity: "error",
-      summary: "Fehler",
-      detail: "Dateien konnten nicht hochgeladen werden",
-      life: 3000,
-    });
   }
 };

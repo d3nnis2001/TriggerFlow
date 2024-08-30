@@ -3,7 +3,7 @@
         <Toast />
         <FileUpload
             name="demo[]"
-            url="/api/upload"
+            url="/api/nodes/uploadFiles"
             @upload="onAdvancedUpload($event)"
             :multiple="true"
             accept=".pdf,.csv,.xls,.xlsx"
@@ -17,16 +17,16 @@
 </template>
 
 <script setup>
-import { useToast } from "primevue/usetoast";
 import FileUpload from "primevue/fileupload";
-const toast = useToast();
+import { uploadFiles } from "../../api/nodes.js";
 
 const onAdvancedUpload = () => {
-    toast.add({
-        severity: "info",
-        summary: "Success",
-        detail: "File Uploaded",
-        life: 3000,
+    const files = event.files;
+    const formData = new FormData();
+
+    files.forEach((file) => {
+        formData.append("files", file);
     });
+    uploadFiles(formData);
 };
 </script>

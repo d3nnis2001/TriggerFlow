@@ -1,22 +1,13 @@
 <script lang="js" setup>
 import { Handle, Position } from "@vue-flow/core";
 import LargeFileUpload from "./LargeFileUploader.vue";
-import { ref } from "vue";
-
-const uploadedFiles = ref([]);
-
-const handleFileUploaded = (file) => {
-    uploadedFiles.value.push(file);
-    console.log("Neue Datei:", file);
-    // API CALL hier
-};
 </script>
 
 <template>
     <div class="custom-node">
         <Handle type="target" :position="Position.Top" />
         <h2 class="text-black">File Uploader</h2>
-        <LargeFileUpload @file-uploaded="handleFileUploaded" />
+        <LargeFileUpload />
         <Handle type="source" :position="Position.Bottom" />
     </div>
 </template>
