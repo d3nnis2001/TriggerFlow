@@ -21,13 +21,16 @@
             <ToggleSwitch v-model="checked" />
         </div>
         <div class="top-section">
-            <div class="editor-container">
+            <div v-if="checked===false" class="editor-container">
                 <EditorComponent v-model="code" @scroll="handleEditorScroll" />
                 <div class="resizer" ref="resizer"></div>
                 <OutputComponent
                     :outputs="outputs"
                     :editor-scroll-top="editorScrollTop"
                 />
+            </div>
+            <div v-if="checked=true">
+                <Playground/>
             </div>
             <RightPanelComponent :codeSnippets="docsFunctions" />
         </div>
@@ -49,6 +52,7 @@ import docsFunctions from "../assets/docs";
 import { useRoute } from "vue-router";
 import Papa from "papaparse";
 import ToggleSwitch from 'primevue/toggleswitch';
+import Playground from "../components/EditorPage/SnippetPlayground.vue"
 
 export default {
     components: {
@@ -58,6 +62,7 @@ export default {
         TableComponent,
         SnippetManagerComponent,
         ToggleSwitch,
+        Playground
     },
     setup() {
         const code = ref("");
@@ -204,6 +209,7 @@ export default {
     height: 100vh;
     width: 100vw;
 }
+
 
 .top-section {
     display: flex;
