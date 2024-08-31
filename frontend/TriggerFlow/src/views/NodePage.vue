@@ -17,7 +17,6 @@ import Merge from "../components/Nodes/Merge.vue";
 import EmailService from "../components/Nodes/EmailService.vue";
 import Editor from "../components/Nodes/Editor.vue";
 import Comment from "../components/Nodes/Comment.vue";
-import TableComponentVue from "@/components/EditorPage/TableComponent.vue";
 import Rest from "@/components/Nodes/REST.vue";
 import FileUploader from "../components/Nodes/FileUploader.vue";
 

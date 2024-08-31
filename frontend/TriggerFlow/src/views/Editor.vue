@@ -1,47 +1,46 @@
 <template>
-    <div class="main-container">
-        <div class="top-buttons">
-            <div class="play-button">
-                <button @click="runTheCode">
-                    <i class="pi pi-code"></i>
-                </button>
-            </div>
-            <div class="play-button">
-                <button @click="openSnippetManager">
-                    <i class="pi pi-save"></i>
-                </button>
-            </div>
-            <div class="play-button">
-                <button @click="refreshOutput">
-                    <i class="pi pi-refresh"></i>
-                </button>
-            </div>
-        </div>
-        <div class="card flex justify-start">
-            <ToggleSwitch v-model="checked" />
-        </div>
-        <div class="top-section">
-            <div v-if="checked===false" class="editor-container">
-                <EditorComponent v-model="code" @scroll="handleEditorScroll" />
-                <div class="resizer" ref="resizer"></div>
-                <OutputComponent
-                    :outputs="outputs"
-                    :editor-scroll-top="editorScrollTop"
-                />
-            </div>
-            <div v-else>
-                <Playground ref="playground"/>
-            </div>
-            <RightPanelComponent :codeSnippets="docsFunctions" @drag-start="onDragStart"/>
-        </div>
-        <div class="bottom-section">
-            <table-component :data="tableData"></table-component>
-        </div>
+  <div class="flex flex-col h-screen w-screen">
+    <div class="flex mb-2">
+      <button @click="runTheCode" class="bg-gray-200 border border-gray-300 rounded p-1 mr-1 cursor-pointer">
+        <i class="pi pi-code text-gray-700"></i>
+      </button>
+      <button @click="openSnippetManager" class="bg-gray-200 border border-gray-300 rounded p-1 mr-1 cursor-pointer">
+        <i class="pi pi-save text-gray-700"></i>
+      </button>
+      <button @click="refreshOutput" class="bg-gray-200 border border-gray-300 rounded p-1 cursor-pointer">
+        <i class="pi pi-refresh text-gray-700"></i>
+      </button>
     </div>
+    <div class="flex justify-start mb-2">
+      <ToggleSwitch v-model="checked" />
+    </div>
+<Splitter class="flex flex-col h-screen">
+  <SplitterPanel :size="66">
+    <Splitter layout="horizontal" class="h-full">
+      <SplitterPanel :size="75" class="flex">
+        <div v-if="!checked" class="flex-grow border border-gray-300 rounded overflow-hidden mr-2">
+          <EditorComponent v-model="code" @scroll="handleEditorScroll" />
+        </div>
+        <div v-else class="w-full">
+          <Playground ref="playground"/>
+        </div>
+      </SplitterPanel>
+      <SplitterPanel :size="25">
+        <RightPanelComponent :codeSnippets="docsFunctions" @drag-start="onDragStart"/>
+      </SplitterPanel>
+    </Splitter>
+  </SplitterPanel>
+  <SplitterPanel :size="34">
+    <div class="h-full overflow-auto border border-gray-300 rounded mt-2">
+      <TableComponent :data="tableData"/>
+    </div>
+  </SplitterPanel>
+</Splitter>
+</div>
 </template>
 
 <script>
-import { onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import EditorComponent from "../components/EditorPage/EditorComponent.vue";
 import OutputComponent from "../components/EditorPage/OutputComponent.vue";
 import SnippetManagerComponent from "../components/EditorPage/SnippetManagerComponent.vue";
@@ -53,6 +52,8 @@ import { useRoute } from "vue-router";
 import Papa from "papaparse";
 import ToggleSwitch from 'primevue/toggleswitch';
 import Playground from "../components/EditorPage/SnippetPlayground.vue"
+import Splitter from 'primevue/splitter';
+import SplitterPanel from 'primevue/splitterpanel';
 
 export default {
     components: {
@@ -62,13 +63,14 @@ export default {
         TableComponent,
         SnippetManagerComponent,
         ToggleSwitch,
-        Playground
+        Playground,
+        Splitter,
+        SplitterPanel,
     },
     setup() {
         const code = ref("");
         const outputs = ref([]);
         const editorScrollTop = ref(0);
-        const resizer = ref(null);
         const outputContainer = ref(null);
         const showSnippetManager = ref(false);
         const route = useRoute();
@@ -76,6 +78,12 @@ export default {
         const tableData = ref([]);
         const checked = ref(false);
         const playground = ref(null);
+
+        tableData.value = [
+                { id: 1, name: 'Produkt A', category: 'Elektronik', quantity: 50, price: 199.99 },
+                { id: 2, name: 'Produkt B', category: 'Möbel', quantity: 30, price: 299.99 },
+                { id: 3, name: 'Produkt C', category: 'Kleidung', quantity: 100, price: 49.99 },
+        ];
 
         function onDragStart(item) {
             console.log('Drag started:', item);
@@ -153,39 +161,6 @@ export default {
             editorScrollTop.value = scrollTop;
         }
 
-        function setupResizer() {
-            let startX, startWidth;
-
-            function startResize(e) {
-                startX = e.clientX;
-                startWidth = parseInt(
-                    getComputedStyle(outputContainer.value).width,
-                    10,
-                );
-                document.addEventListener("mousemove", resize);
-                document.addEventListener("mouseup", stopResize);
-            }
-
-            function resize(e) {
-                const newWidth = startWidth + startX - e.clientX;
-                outputContainer.value.style.width = `${newWidth}px`;
-            }
-
-            function stopResize() {
-                document.removeEventListener("mousemove", resize);
-                document.removeEventListener("mouseup", stopResize);
-            }
-
-            onMounted(() => {
-                resizer.value.addEventListener("mousedown", startResize);
-                fileName.value = route.query.file || "";
-                if (fileName.value) {
-                    loadFileData();
-                }
-            });
-        }
-
-        setupResizer();
 
         return {
             code,
@@ -195,7 +170,6 @@ export default {
             runTheCode,
             refreshOutput,
             handleEditorScroll,
-            resizer,
             outputContainer,
             openSnippetManager,
             tableData,
@@ -210,61 +184,4 @@ export default {
 </script>
 
 <style scoped>
-.main-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-}
-
-
-.top-section {
-    display: flex;
-    height: 65%;
-}
-
-.editor-container {
-    display: flex;
-    flex-grow: 1;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-right: 10px;
-}
-
-.resizer {
-    width: 5px;
-    background: #ccc;
-    cursor: col-resize;
-}
-
-.bottom-section {
-    height: 30%;
-    overflow: auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-.top-buttons {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.play-button,
-.refresh-button {
-    background-color: #f7f7f7;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 5px;
-    cursor: pointer;
-}
-
-.play-button button,
-.refresh-button button {
-    background-color: transparent;
-    border: none;
-    color: #333;
-    font-size: 16px;
-}
 </style>
