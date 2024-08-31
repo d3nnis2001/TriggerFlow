@@ -29,10 +29,10 @@
                     :editor-scroll-top="editorScrollTop"
                 />
             </div>
-            <div v-if="checked=true">
-                <Playground/>
+            <div v-else>
+                <Playground ref="playground"/>
             </div>
-            <RightPanelComponent :codeSnippets="docsFunctions" />
+            <RightPanelComponent :codeSnippets="docsFunctions" @drag-start="onDragStart"/>
         </div>
         <div class="bottom-section">
             <table-component :data="tableData"></table-component>
@@ -75,6 +75,11 @@ export default {
         const fileName = ref("");
         const tableData = ref([]);
         const checked = ref(false);
+        const playground = ref(null);
+
+        function onDragStart(item) {
+            console.log('Drag started:', item);
+        }
 
         function openSnippetManager() {
             showSnippetManager.value = true;
@@ -197,6 +202,8 @@ export default {
             closeSnippetManager,
             showSnippetManager,
             checked,    
+            playground, 
+            onDragStart,
         };
     },
 };

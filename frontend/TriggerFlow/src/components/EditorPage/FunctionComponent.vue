@@ -1,14 +1,14 @@
 <template>
-  <div class="p-4 bg-gray-100 rounded-lg shadow-md flex items-center">
-    <Button icon="pi pi-trash" class="p-button-danger p-button-rounded" @click="$emit('delete')" />
-    <div class="ml-4 flex-grow">
-      <h3 class="text-lg font-bold mb-2">{{ name }}</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <InputText v-for="(value, index) in inputValues" 
+  <div class="p-1 bg-gray-100 rounded-lg shadow-md flex items-center">
+    <Button icon="pi pi-trash" class="p-button-danger p-button-rounded p-button-sm" @click="$emit('delete')" />
+    <div class="ml-1 flex-grow">
+      <h3 class="text-sm font-bold mb-0.5">{{ name }}</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1">
+        <InputText v-for="(param, index) in params" 
                    :key="index" 
                    v-model="inputValues[index]" 
-                   :placeholder="`Input ${index + 1}`"
-                   class="w-full" />
+                   :placeholder="param"
+                   class="w-full text-white py-0.5 px-1 text-xs" />
       </div>
     </div>
   </div>
@@ -24,19 +24,18 @@ const props = defineProps({
     type: String,
     required: true
   },
-  inputCount: {
-    type: Number,
-    default: 2,
-    validator: (value) => value >= 1 && value <= 5
-  }
+  params: {
+    type: Array,
+    default: () => []
+  },
 });
 
 const emit = defineEmits(['delete', 'update:inputValues']);
 
-const inputValues = ref(Array(props.inputCount).fill(''));
+const inputValues = ref(Array(props.params.length).fill(''));
 
-watch(() => props.inputCount, (newCount) => {
-  inputValues.value = inputValues.value.slice(0, newCount).concat(Array(Math.max(0, newCount - inputValues.value.length)).fill(''));
+watch(() => props.params.length, (newLength) => {
+  inputValues.value = inputValues.value.slice(0, newLength).concat(Array(Math.max(0, newLength - inputValues.value.length)).fill(''));
 });
 
 watch(inputValues, (newValues) => {
@@ -45,5 +44,4 @@ watch(inputValues, (newValues) => {
 </script>
 
 <style scoped>
-/* Zusätzliche Stile können hier hinzugefügt werden */
 </style>
