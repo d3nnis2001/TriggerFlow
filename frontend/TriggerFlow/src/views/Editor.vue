@@ -14,28 +14,28 @@
     <div class="flex justify-start mb-2">
       <ToggleSwitch v-model="checked" />
     </div>
-<Splitter class="flex flex-col h-screen">
-  <SplitterPanel :size="66">
-    <Splitter layout="horizontal" class="h-full">
-      <SplitterPanel :size="75" class="flex">
-        <div v-if="!checked" class="flex-grow border border-gray-300 rounded overflow-hidden mr-2">
-          <EditorComponent v-model="code" @scroll="handleEditorScroll" />
+    <Splitter layout="vertical" class="flex flex-col h-screen">
+    <SplitterPanel :size="66">
+        <Splitter layout="horizontal" class="h-full">
+        <SplitterPanel :size="75" class="flex">
+            <div v-if="!checked" class="flex-grow border border-gray-300 rounded overflow-hidden mr-2">
+            <EditorComponent v-model="code" @scroll="handleEditorScroll" />
+            </div>
+            <div v-else class="w-full">
+            <Playground ref="playground"/>
+            </div>
+        </SplitterPanel>
+        <SplitterPanel :size="25">
+            <RightPanelComponent :codeSnippets="docsFunctions" @drag-start="onDragStart"/>
+        </SplitterPanel>
+        </Splitter>
+    </SplitterPanel>
+    <SplitterPanel :size="34">
+        <div class="h-full overflow-auto border border-gray-300 rounded mt-2">
+        <TableComponent :data="tableData"/>
         </div>
-        <div v-else class="w-full">
-          <Playground ref="playground"/>
-        </div>
-      </SplitterPanel>
-      <SplitterPanel :size="25">
-        <RightPanelComponent :codeSnippets="docsFunctions" @drag-start="onDragStart"/>
-      </SplitterPanel>
+    </SplitterPanel>
     </Splitter>
-  </SplitterPanel>
-  <SplitterPanel :size="34">
-    <div class="h-full overflow-auto border border-gray-300 rounded mt-2">
-      <TableComponent :data="tableData"/>
-    </div>
-  </SplitterPanel>
-</Splitter>
 </div>
 </template>
 

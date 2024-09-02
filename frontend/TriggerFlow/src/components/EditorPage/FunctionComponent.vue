@@ -1,8 +1,8 @@
 <template>
   <div class="p-1 bg-gray-100 rounded-lg shadow-md flex items-center">
-    <Button icon="pi pi-trash" class="p-button-danger p-button-rounded p-button-sm" @click="$emit('delete')" />
+    <Button icon="pi pi-trash" class="p-button-danger text-black p-button-rounded p-button-sm" @click="$emit('delete')" />
     <div class="ml-1 flex-grow">
-      <h3 class="text-sm font-bold mb-0.5">{{ name }}</h3>
+      <h3 class="text-sm text-black font-bold mb-0.5">{{ name }}</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1">
         <InputText v-for="(param, index) in params" 
                    :key="index" 
