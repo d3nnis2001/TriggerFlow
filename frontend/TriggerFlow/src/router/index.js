@@ -6,6 +6,7 @@ import Login from "../views/Login.vue";
 import Overview from "../views/Overview.vue";
 import JobOverview from "../views/JobOverview.vue";
 import MappingPage from "../views/MappingPage.vue";
+import SatzFormatEditor from "../views/SatzformatEditor.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: "/mapping",
       name: "MappingPage",
       component: MappingPage,
+    },
+    {
+      path: "/satzformateditor",
+      name: "SatzformatEditor",
+      component: SatzFormatEditor,
     },
   ],
 });

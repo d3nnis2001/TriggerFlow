@@ -20,8 +20,8 @@
             <div class="rectangle" @click="changeRoute('archiv')">
                 Job Archiv
             </div>
-            <div class="rectangle" @click="changeRoute('fill')">
-                Hier ist fill
+            <div class="rectangle text-center" @click="changeRoute('satzformateditor')">
+                Satzformat Editor
             </div>
         </div>
         <Footer></Footer>
