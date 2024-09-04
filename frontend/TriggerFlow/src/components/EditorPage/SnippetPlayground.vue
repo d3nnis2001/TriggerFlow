@@ -54,9 +54,8 @@
   .recktangle {
     display: flex;
     flex-direction: column;
-    width: 85vw;
+    width: 100%;
     height: 100%;   
-    border: solid white 2px;
   }
 
   .list-group-item {

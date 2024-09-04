@@ -75,6 +75,13 @@ const toggleSidebar = () => {
                 >
                     File Uploader
                 </div>
+                <div
+                    class="vue-flow__node-output"
+                    :draggable="true"
+                    @dragstart="onDragStart($event, 'mapping')"
+                >
+                    Mapping
+                </div>
             </div>
         </div>
     </aside>

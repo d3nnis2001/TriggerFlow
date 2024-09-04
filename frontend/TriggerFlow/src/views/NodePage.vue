@@ -19,6 +19,7 @@ import Editor from "../components/Nodes/Editor.vue";
 import Comment from "../components/Nodes/Comment.vue";
 import Rest from "@/components/Nodes/REST.vue";
 import FileUploader from "../components/Nodes/FileUploader.vue";
+import Mapping from "../components/Nodes/Mapping.vue";
 
 const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject } =
     useVueFlow();
@@ -64,6 +65,7 @@ const nodeTypes = {
     comment: markRaw(Comment),
     rest: markRaw(Rest),
     upload: markRaw(FileUploader),
+    mapping: markRaw(Mapping),
 };
 </script>
 

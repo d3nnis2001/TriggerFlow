@@ -1,6 +1,6 @@
 <template>
-    <div class="card flex justify-center">
-        <Listbox v-model="selectedCode" :options="codeSnippets" optionLabel="name" filter class="w-full h-full">
+    <div class="card flex flex-col h-full">
+        <Listbox v-model="selectedCode" :options="codeSnippets" optionLabel="name" listStyle="max-height:1000px" filter class="flex-grow">
             <template #option="slotProps">
                 <div 
                     class="flex items-center cursor-move" 
@@ -39,6 +39,16 @@ const onDragStart = (event, item) => {
 
 <style scoped>
 .p-listbox {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+:deep(.p-listbox-list-wrapper) {
     height: 100%;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
 }
 </style>

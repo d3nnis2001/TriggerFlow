@@ -5,6 +5,7 @@ import ColumnPicker from "../views/ColumnList.vue";
 import Login from "../views/Login.vue";
 import Overview from "../views/Overview.vue";
 import JobOverview from "../views/JobOverview.vue";
+import MappingPage from "../views/MappingPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: "/jobs",
       name: "JobOverview",
       component: JobOverview,
+    },
+    {
+      path: "/mapping",
+      name: "MappingPage",
+      component: MappingPage,
     },
   ],
 });
