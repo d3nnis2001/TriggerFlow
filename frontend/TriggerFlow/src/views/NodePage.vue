@@ -20,6 +20,7 @@ import Comment from "../components/Nodes/Comment.vue";
 import Rest from "@/components/Nodes/REST.vue";
 import FileUploader from "../components/Nodes/FileUploader.vue";
 import Mapping from "../components/Nodes/Mapping.vue";
+import MainBar from "../components/NodePage/MainBar.vue";
 
 const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject } =
     useVueFlow();
@@ -69,7 +70,8 @@ const nodeTypes = {
 };
 </script>
 
-<template>
+<template> 
+    <MainBar class="background-item text-white"/>
     <VueFlow
         :nodes="nodes"
         :edges="edges"
@@ -93,20 +95,17 @@ const nodeTypes = {
         </DropzoneBackground>
         <Background pattern-color="#aaa" :gap="16" />
 
-        <Controls position="top-left">
-            <ControlButton title="Reset Transform" @click="resetTransform">
-                <Icon name="reset" />
-            </ControlButton>
-
-            <ControlButton title="Toggle Dark Mode" @click="toggleDarkMode">
-                <Icon v-if="dark" name="sun" />
-                <Icon v-else name="moon" />
-            </ControlButton>
-
-            <ControlButton title="Log `toObject`" @click="logToObject">
-                <Icon name="log" />
-            </ControlButton>
-        </Controls>
+    
     </VueFlow>
-    <Sidebar />
 </template>
+
+<style>
+
+.background-item {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+}
+
+</style>

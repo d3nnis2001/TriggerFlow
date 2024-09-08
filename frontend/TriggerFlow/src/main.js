@@ -15,6 +15,8 @@ import ElementPlus from "element-plus";
 import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
 import Aura from "@primevue/themes/aura";
+import Ripple from "primevue/ripple";
+import StyleClass from 'primevue/styleclass';
 
 const app = createApp(App);
 
@@ -35,4 +37,6 @@ app.use(PrimeVue, {
   },
 });
 
+app.directive('styleclass', StyleClass);
+app.directive('ripple', Ripple)
 app.mount("#app");

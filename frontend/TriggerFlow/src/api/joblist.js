@@ -9,4 +9,4 @@ export const getAllJobs = async function getAllJobs() {
     console.error("Unseen error when getting Jobs:", error);
     return false;
   }
-};
+};  
