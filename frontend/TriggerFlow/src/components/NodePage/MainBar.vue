@@ -40,13 +40,13 @@
                                 </div>
                                 <ul class="list-none p-0 m-0 overflow-hidden">
                                     <li>
-                                        <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                        <a v-ripple @click="openDialog('eigenschaften')" class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                                             <i class="pi pi-pen-to-square  mr-2"></i>
                                             <span class="font-medium">Eigenschaften</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                        <a v-ripple @click="openDialog('zeitplan')" class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                                             <i class="pi pi-clock mr-2"></i>
                                             <span class="font-medium">Zeitplan</span>
                                         </a>
@@ -69,13 +69,13 @@
                                         </a>
                                         <ul class="list-none py-0 pl-4 pr-0 m-0 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out">
                                           <li>
-                                            <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <a v-ripple @click="openDialog('export')"  class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                                               <i class="pi pi-file-export mr-2"></i>
                                               <span class="font-medium">Export</span>
                                             </a>
                                           </li>
                                           <li>
-                                              <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                              <a v-ripple @click="openDialog('import')"  class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                                                   <i class="pi pi-file-import mr-2"></i>
                                                   <span class="font-medium">Import</span>
                                               </a>
@@ -83,7 +83,7 @@
                                         </ul>
                                     </li>
                                     <li>
-                                        <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                        <a v-ripple @click="openDialog('format')"  class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                                             <i class="pi pi-cog mr-2"></i>
                                             <span class="font-medium">Format Einstellungen</span>
                                         </a>
@@ -121,13 +121,13 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                        <a v-ripple @click="openDialog('table')" class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                                             <i class="pi pi-table mr-2"></i>
                                             <span class="font-medium">Tabelle</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                        <a v-ripple @click="openDialog('variablen')" class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                                             <i class="pi pi-code mr-2"></i>
                                             <span class="font-medium">Job-Variablen</span>
                                         </a>
@@ -147,6 +147,13 @@
             </template>
         </Drawer>
         <Button icon="pi pi-bars" class="bg-white text-black" @click="visible = true" style="font-size: 4rem" rounded outlined raised text/>
+      <TableDialog v-model:visible="tableDialogVisible" />
+      <EigenschaftenDialog v-model:visible="eigenschaftenDialogVisible" />
+      <VariablenDialog v-model:visible="variablenDialogVisible" />
+      <FormatDialog v-model:visible="formatDialogVisible" />
+      <ZeitplanDialog v-model:visible="zeitplanDialogVisible" />
+      <ExportDialog v-model:visible="exportDialogVisible" />
+      <ImportDialog v-model:visible="importDialogVisible" />
     </div>
 </template>
 
@@ -155,6 +162,50 @@ import { ref } from "vue";
 import Drawer from 'primevue/drawer';
 import Button from "primevue/button";
 import Avatar from "primevue/avatar";
+import TableDialog from "../MainBarDialogs/TableDialog.vue"
+import ExportDialog from "@/components/MainBarDialogs/ExportDialog.vue";
+import ImportDialog from "@/components/MainBarDialogs/ImportDialog.vue";
+import EigenschaftenDialog from "@/components/MainBarDialogs/EigenschaftenDialog.vue";
+import VariablenDialog from "@/components/MainBarDialogs/VariablenDialog.vue";
+import FormatDialog from "@/components/MainBarDialogs/FormatDialog.vue";
+import ZeitplanDialog from "@/components/MainBarDialogs/ZeitplanDialog.vue";
+
+const eigenschaftenDialogVisible = ref(false);
+const tableDialogVisible = ref(false);
+const variablenDialogVisible = ref(false);
+const formatDialogVisible = ref(false);
+const zeitplanDialogVisible = ref(false);
+const exportDialogVisible = ref(false);
+const importDialogVisible = ref(false);
+
+
+const openDialog = (dialogType) => {
+  switch(dialogType) {
+    case 'eigenschaften':
+      eigenschaftenDialogVisible.value = true;
+      break;
+    case 'table':
+      tableDialogVisible.value = true;
+      break;
+    case 'variablen':
+      variablenDialogVisible.value = true;
+      break;
+    case 'format':
+      formatDialogVisible.value = true;
+      break;
+    case 'zeitplan':
+      zeitplanDialogVisible.value = true;
+      break;
+    case 'export':
+      exportDialogVisible.value = true;
+      break;
+    case 'import':
+      importDialogVisible.value = true;
+      break;
+  }
+  visible.value = false; // Close the drawer when opening a dialog
+};
+
 
 const visible = ref(false);
 </script>
