@@ -1,123 +1,96 @@
 <template>
-    <div class="rec">
-        <div style="display: flex; flex-direction: column">
-            <p>Your Username</p>
-            <el-input v-model="emailInput" style="width: 80%" placeholder="" />
-            <div class="outerPassword">
-                <p>Your Password</p>
-                <div class="hide" @click="togglePasswordVisibility">
-                    <img
-                        :src="passwordVisibilityIcon"
-                        alt="PasswordVisibility"
-                    />
-                    <p>{{ passwordVisibilityText }}</p>
-                </div>
-            </div>
-            <el-input
-                v-model="passInput"
-                style="width: 80%"
-                :type="passwordFieldType"
-                placeholder=""
-            />
+  <div class="flex justify-center items-center min-h-screen bg-gray-900">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+      <div class="text-center mb-8">
+        <!--TODO: Add logo here -->
+        <i class="text-4xl text-purple-500 mb-4">●</i>
+        <h2 class="text-2xl font-semibold text-gray-100 mb-2">Welcome Back</h2>
+        <p class="text-gray-400">
+          Don't have an account?
+          <router-link to="/signup" class="text-purple-400 hover:underline">Create today!</router-link>
+        </p>
+      </div>
+      <form @submit.prevent="handleLogin">
+        <div class="mb-4">
+          <label for="email" class="block text-gray-300 font-medium mb-2">Email</label>
+          <input
+              id="email"
+              v-model="emailInput"
+              type="email"
+              class="w-full px-3 py-2 bg-gray-700 text-gray-200 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+          />
         </div>
-        <el-button type="primary" @click="handleLogin">Log in</el-button>
-        <p v-if="error" class="error-message">{{ error }}</p>
+        <div class="mb-6">
+          <label for="password" class="block text-gray-300 font-medium mb-2">Password</label>
+          <input
+              id="password"
+              v-model="passwordInput"
+              type="password"
+              class="w-full px-3 py-2 bg-gray-700 text-gray-200 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+          />
+        </div>
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center">
+            <input
+                id="rememberme"
+                v-model="checkbox_remember"
+                type="checkbox"
+                class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-500 rounded bg-gray-700"
+            />
+            <label for="rememberme" class="ml-2 block text-gray-300">Remember me</label>
+          </div>
+          <router-link to="/forgot-password" class="text-purple-400 hover:underline">Forgot password?</router-link>
+        </div>
+        <button
+            type="submit"
+            class="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+        >
+          Sign In
+        </button>
+      </form>
     </div>
-    <el-button type="primary">Request an Account</el-button>
+  </div>
 </template>
 
-<script>
-import { ref, computed } from "vue";
-import { ElButton, ElInput } from "element-plus";
-import PasswordHideIcon from "../icons/PasswordHide.svg";
-import PasswordShowIcon from "../icons/PasswordShow.svg";
-import { checkLoginData } from "../../api/login";
-import { useRouter } from "vue-router";
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import { checkLoginData } from "@/api/login.js";
 
-export default {
-    components: {
-        ElInput,
-        ElButton,
-    },
-    setup() {
-        const router = useRouter();
-        const emailInput = ref("");
-        const passInput = ref("");
-        const showPassword = ref(false);
-        const error = ref("");
+const router = useRouter()
+const toast = useToast()
 
-        const passwordFieldType = computed(() =>
-            showPassword.value ? "text" : "password",
-        );
-        const passwordVisibilityIcon = computed(() =>
-            showPassword.value ? PasswordShowIcon : PasswordHideIcon,
-        );
-        const passwordVisibilityText = computed(() =>
-            showPassword.value ? "Show" : "Hide",
-        );
+const emailInput = ref("")
+const passwordInput = ref("")
+const checkbox_remember = ref(false)
 
-        const togglePasswordVisibility = () => {
-            showPassword.value = !showPassword.value;
-        };
+const handleLogin = async () => {
+  try {
+    const response = await checkLoginData(emailInput.value, passwordInput.value);
 
-        const handleLogin = async () => {
-            try {
-                const response = await checkLoginData(
-                    emailInput.value,
-                    passInput.value,
-                );
-                console.log(response);
-                if (response.status == 200) {
-                    router.push("/overview");
-                } else {
-                    throw new Error("Ungültige Anmeldedaten");
-                }
-            } catch (err) {
-                error.value = err.message;
-            }
-        };
-
-        return {
-            emailInput,
-            passInput,
-            passwordFieldType,
-            passwordVisibilityIcon,
-            passwordVisibilityText,
-            togglePasswordVisibility,
-            handleLogin,
-            error,
-        };
-    },
+    if (response.status === 200) {
+      toast.success('You have successfully logged in!', {
+        timeout: 3000
+      });
+      await router.push('/dashboard')
+    }
+  } catch (error) {
+    if (error.response) {
+      toast.error(error.response.data.message || 'Invalid email or password', {
+        timeout: 3000
+      });
+    } else if (error.request) {
+      toast.error('Unable to connect to the server. Please check your internet connection.', {
+        timeout: 3000
+      });
+    } else {
+      toast.error('An unexpected error occurred. Please try again.', {
+        timeout: 3000
+      });
+    }
+  }
 };
 </script>
-
-<style scoped>
-.rec {
-    background-color: #3f3f3f;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    width: 30vw;
-    height: auto; /* Geändert von 20vh zu auto für flexiblere Höhe */
-    border-radius: 16px;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-.hide {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    width: 80%;
-    cursor: pointer;
-}
-.outerPassword {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 80%;
-}
-.error-message {
-    color: red;
-    margin-top: 10px;
-}
-</style>

@@ -1,12 +1,12 @@
 <template>
-  <div class="p-1 bg-gray-100 rounded-lg shadow-md flex items-center">
+  <div :class="['p-1 bg-gray-100 rounded-lg shadow-md flex items-center', {'ml-10': indented}]" :style="{ marginLeft: `${indentation * 10}px` }">
     <Button icon="pi pi-trash" class="p-button-danger text-black p-button-rounded p-button-sm" @click="$emit('delete')" />
     <div class="ml-1 flex-grow">
-      <h3 class="text-sm text-black font-bold mb-0.5">{{ name }}</h3>
+      <h3 class="text-xs text-black font-bold mb-0.5">{{ name }}</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1">
-        <InputText v-for="(param, index) in params" 
-                   :key="index" 
-                   v-model="inputValues[index]" 
+        <InputText v-for="(param, index) in params"
+                   :key="index"
+                   v-model="inputValues[index]"
                    :placeholder="param"
                    class="w-full text-white py-0.5 px-1 text-xs" />
       </div>
@@ -28,6 +28,10 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  indentation: {
+    type: Number,
+    default: 0
+  }
 });
 
 const emit = defineEmits(['delete', 'update:inputValues']);
@@ -44,4 +48,5 @@ watch(inputValues, (newValues) => {
 </script>
 
 <style scoped>
+/* Add any additional styles here */
 </style>
