@@ -115,10 +115,122 @@
                                 </div>
                                 <ul class="list-none p-0 m-0 overflow-hidden">
                                     <li>
+                                      <a
+                                          v-ripple
+                                          v-styleclass="{
+                                                selector: '@next',
+                                                enterFromClass: 'hidden',
+                                                enterActiveClass: 'animate-slidedown',
+                                                leaveToClass: 'hidden',
+                                                leaveActiveClass: 'animate-slideup'
+                                            }"
+                                          class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
+                                      >
+                                        <i class="pi pi-file mr-2"></i>
+                                        <span class="font-medium">Shapes</span>
+                                        <i class="pi pi-chevron-down ml-auto"></i>
+                                      </a>
+                                      <ul class="list-none py-0 pl-4 pr-0 m-0 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'filereader')"
+                                            >
+                                              File Reader
+                                            </div>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'split')"
+                                            >
+                                              Split
+                                            </div>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'merge')"
+                                            >
+                                              Merge
+                                            </div>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'email')"
+                                            >
+                                              E-Mail Service
+                                            </div>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'editor')"
+                                            >
+                                              Editor
+                                            </div>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'comment')"
+                                            >
+                                              Kommentar
+                                            </div>
+                                          </a>
+                                        </li>                                        <li>
                                         <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                                            <i class="pi pi-th-large mr-2"></i>
-                                            <span class="font-medium">Shapes</span>
+                                          <div
+                                              class="vue-flow__node-output"
+                                              :draggable="true"
+                                              @dragstart="onDragStart($event, 'rest')"
+                                          >
+                                            REST Operation
+                                          </div>
                                         </a>
+                                      </li>
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'upload')"
+                                            >
+                                              File Uploader
+                                            </div>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                            <div
+                                                class="vue-flow__node-output"
+                                                :draggable="true"
+                                                @dragstart="onDragStart($event, 'mapping')"
+                                            >
+                                              Mapping
+                                            </div>
+                                          </a>
+                                        </li>
+
+                                      </ul>
                                     </li>
                                     <li>
                                         <a v-ripple @click="openDialog('table')" class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
@@ -169,6 +281,7 @@ import EigenschaftenDialog from "@/components/MainBarDialogs/EigenschaftenDialog
 import VariablenDialog from "@/components/MainBarDialogs/VariablenDialog.vue";
 import FormatDialog from "@/components/MainBarDialogs/FormatDialog.vue";
 import ZeitplanDialog from "@/components/MainBarDialogs/ZeitplanDialog.vue";
+import useDragAndDrop from "./useDnD";
 
 const eigenschaftenDialogVisible = ref(false);
 const tableDialogVisible = ref(false);
@@ -178,6 +291,7 @@ const zeitplanDialogVisible = ref(false);
 const exportDialogVisible = ref(false);
 const importDialogVisible = ref(false);
 
+const { onDragStart } = useDragAndDrop();
 
 const openDialog = (dialogType) => {
   switch(dialogType) {

@@ -2,14 +2,11 @@
 import { ref, markRaw } from "vue";
 import { VueFlow, useVueFlow } from "@vue-flow/core";
 import { Background } from "@vue-flow/background";
-import { ControlButton, Controls } from "@vue-flow/controls";
 import {
     initialEdges,
     initialNodes,
 } from "../components/NodePage/initial-elements.js";
-import Icon from "../components/NodePage/Icon.vue";
 import DropzoneBackground from "../components/NodePage/DropzoneBackground.vue";
-import Sidebar from "../components/NodePage/Sidebar.vue";
 import useDragAndDrop from "../components/NodePage/useDnD.js";
 import FileReader from "../components/Nodes/FileReader.vue";
 import Split from "../components/Nodes/Split.vue";
@@ -21,6 +18,7 @@ import Rest from "@/components/Nodes/REST.vue";
 import FileUploader from "../components/Nodes/FileUploader.vue";
 import Mapping from "../components/Nodes/Mapping.vue";
 import MainBar from "../components/NodePage/MainBar.vue";
+import Button from "primevue/button";
 
 const { onInit, onNodeDragStop, onConnect, addEdges, setViewport, toObject } =
     useVueFlow();
@@ -45,17 +43,6 @@ onConnect((connection) => {
     addEdges(connection);
 });
 
-function logToObject() {
-    console.log(toObject());
-}
-
-function resetTransform() {
-    setViewport({ x: 0, y: 0, zoom: 1 });
-}
-
-function toggleDarkMode() {
-    dark.value = !dark.value;
-}
 
 const nodeTypes = {
     filereader: markRaw(FileReader),
@@ -70,8 +57,11 @@ const nodeTypes = {
 };
 </script>
 
-<template> 
-    <MainBar class="background-item text-white"/>
+<template>
+    <div class="flex flex-row background-item">
+      <MainBar class="text-white"/>
+      <Button icon="pi pi-save" class="bg-white text-black" style="font-size: 4rem" rounded outlined raised text/>
+    </div>
     <VueFlow
         :nodes="nodes"
         :edges="edges"
