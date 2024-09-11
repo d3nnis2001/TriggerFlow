@@ -27,6 +27,19 @@ def init_db():
             password TEXT NOT NULL
         )
         ''')
+
+        # Config Table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS configuration_tables (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL,
+            description TEXT,
+            structure TEXT NOT NULL,
+            data TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
         db.commit()
 
 # Fügen Sie diese Funktion hinzu, um einen Testbenutzer zu erstellen

@@ -5,7 +5,7 @@
       <div class="w-64 bg-gradient-to-b from-gray-800 to-gray-700 p-4 overflow-y-auto">
         <h3 class="text-xl font-bold mb-4">Tabellen</h3>
         <ul class="space-y-2">
-          <li v-for="table in tables" :key="table.id" @click="selectTable(table)" class="flex justify-between items-center cursor-pointer hover:bg-gray-700 p-2 rounded">
+          <li v-for="table in tableStore.tables" :key="table.id" @click="selectTable(table)" class="flex justify-between items-center cursor-pointer hover:bg-gray-700 p-2 rounded">
             {{ table.name }}
             <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text" @click.stop="deleteTable(table)" />
           </li>
@@ -15,7 +15,7 @@
 
       <!-- Rechter Hauptbereich -->
       <div class="flex-1 flex flex-col h-full overflow-hidden">
-        <div v-if="tables.length === 0" class="flex-1 flex items-center justify-center">
+        <div v-if="tableStore.tables.length === 0" class="flex-1 flex items-center justify-center">
           <p class="text-xl text-gray-500">Keine Tabellen vorhanden. Klicken Sie auf "Neue Tabelle", um zu beginnen.</p>
         </div>
         <template v-else>
@@ -74,7 +74,8 @@
 </template>
 
 <script setup>
-import {ref, reactive, computed} from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useTableStore } from '@/stores/tableStore';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
@@ -88,8 +89,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:visible']);
 
-const tables = ref([]);
-const currentTable = reactive({
+const tableStore = useTableStore();
+
+const currentTable = ref({
   id: null,
   name: '',
   description: '',
@@ -97,104 +99,114 @@ const currentTable = reactive({
   data: []
 });
 
+onMounted(async () => {
+  await tableStore.fetchTables();
+});
+
+watch(() => tableStore.currentTable, (newTable) => {
+  if (newTable) {
+    currentTable.value = { ...newTable };
+  }
+}, { deep: true });
+
 const createNewTable = () => {
   const baseName = 'Neue Tabelle';
   let newName = baseName;
   let counter = 1;
-  while (tables.value.some(table => table.name === newName)) {
+  while (tableStore.tables.some(table => table.name === newName)) {
     counter++;
     newName = `${baseName} ${counter}`;
   }
-  currentTable.id = Date.now();
-  currentTable.name = newName;
-  currentTable.description = '';
-  currentTable.columns = Array.from({length: 5}, (_, i) => ({field: `col${i + 1}`, header: `Spalte ${i + 1}`}));
-  currentTable.data = Array.from({length: 7}, (_, i) => {
-    const row = {id: i + 1};
-    currentTable.columns.forEach(col => {
-      row[col.field] = '';
-    });
-    return row;
-  });
-  tables.value.push({...currentTable});
+  currentTable.value = {
+    id: null,
+    name: newName,
+    description: '',
+    columns: Array.from({ length: 5 }, (_, i) => ({ field: `col${i + 1}`, header: `Spalte ${i + 1}` })),
+    data: Array.from({ length: 7 }, (_, i) => {
+      const row = { id: i + 1 };
+      currentTable.value.columns.forEach(col => {
+        row[col.field] = '';
+      });
+      return row;
+    })
+  };
 };
 
 const selectTable = (table) => {
-  Object.assign(currentTable, table);
+  tableStore.setCurrentTable(table);
 };
 
-const deleteTable = (table) => {
-  const index = tables.value.findIndex(t => t.id === table.id);
-  if (index !== -1) {
-    tables.value.splice(index, 1);
-  }
-  if (currentTable.id === table.id) {
-    if (tables.value.length > 0) {
-      selectTable(tables.value[0]);
+const deleteTable = async (table) => {
+  try {
+    await tableStore.deleteTable(table.id);
+    if (tableStore.tables.length > 0) {
+      selectTable(tableStore.tables[0]);
     } else {
-      Object.assign(currentTable, {id: null, name: '', description: '', columns: [], data: []});
+      currentTable.value = { id: null, name: '', description: '', columns: [], data: [] };
     }
+  } catch (error) {
+    // Handle error (e.g., show error message to user)
   }
 };
 
 const addColumn = () => {
-  const newField = `col${currentTable.columns.length + 1}`;
-  currentTable.columns.push({field: newField, header: `Spalte ${currentTable.columns.length + 1}`});
-  currentTable.data.forEach(row => {
+  const newField = `col${currentTable.value.columns.length + 1}`;
+  currentTable.value.columns.push({ field: newField, header: `Spalte ${currentTable.value.columns.length + 1}` });
+  currentTable.value.data.forEach(row => {
     row[newField] = '';
   });
 };
 
 const removeColumn = () => {
-  if (currentTable.columns.length > 5) {
-    const lastField = currentTable.columns[currentTable.columns.length - 1].field;
-    currentTable.columns.pop();
-    currentTable.data.forEach(row => {
+  if (currentTable.value.columns.length > 5) {
+    const lastField = currentTable.value.columns[currentTable.value.columns.length - 1].field;
+    currentTable.value.columns.pop();
+    currentTable.value.data.forEach(row => {
       delete row[lastField];
     });
   }
 };
 
 const addRow = () => {
-  const newRow = {id: currentTable.data.length + 1};
-  currentTable.columns.forEach(col => {
+  const newRow = { id: currentTable.value.data.length + 1 };
+  currentTable.value.columns.forEach(col => {
     newRow[col.field] = '';
   });
-  currentTable.data.push(newRow);
+  currentTable.value.data.push(newRow);
 };
 
 const removeRow = () => {
-  if (currentTable.data.length > 7) {
-    currentTable.data.pop();
+  if (currentTable.value.data.length > 7) {
+    currentTable.value.data.pop();
   }
 };
 
 const onCellEditComplete = (event) => {
-  const {data, newValue, field} = event;
+  const { data, newValue, field } = event;
   data[field] = newValue;
 };
 
 const updateColumnHeader = (index, event) => {
-  currentTable.columns[index].header = event.target.value;
+  currentTable.value.columns[index].header = event.target.value;
 };
 
-const saveTable = () => {
-  const index = tables.value.findIndex(t => t.id === currentTable.id);
-  if (index !== -1) {
-    tables.value[index] = {...currentTable};
-  } else {
-    tables.value.push({...currentTable});
+const saveTable = async () => {
+  try {
+    await tableStore.saveTable(currentTable.value);
+    // Optional: Show success message
+  } catch (error) {
+    // Handle error (e.g., show error message to user)
   }
-  console.log('Tabelle gespeichert:', currentTable);
 };
 
 const ensureUniqueTableName = () => {
-  let newName = currentTable.name;
+  let newName = currentTable.value.name;
   let counter = 1;
-  while (tables.value.some(table => table.id !== currentTable.id && table.name === newName)) {
+  while (tableStore.tables.some(table => table.id !== currentTable.value.id && table.name === newName)) {
     counter++;
-    newName = `${currentTable.name} ${counter}`;
+    newName = `${currentTable.value.name} ${counter}`;
   }
-  currentTable.name = newName;
+  currentTable.value.name = newName;
 };
+
 </script>
