@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ..service.node_service import NodeService
+from ..service.nodeService import NodeService
 
 nodes_bp = Blueprint('nodes', __name__, url_prefix='/api/nodes')
 

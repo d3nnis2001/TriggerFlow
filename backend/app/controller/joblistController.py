@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import subprocess
-from app.service.joblist_service import JoblistService
+from ..service.joblistService import JoblistService
 
 joblist_bp = Blueprint('joblist', __name__, url_prefix='/api/joblist')
 

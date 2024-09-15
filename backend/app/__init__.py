@@ -20,8 +20,10 @@ def create_app(config_class=Config):
     from .controller.nodeController import nodes_bp
     app.register_blueprint(nodes_bp)
 
-    from .controller.config_tableController import config_table_bp
-
+    from .controller.configController import config_table_bp
     app.register_blueprint(config_table_bp)
+
+    from .controller.jobController import job_bp
+    app.register_blueprint(job_bp)
 
     return app

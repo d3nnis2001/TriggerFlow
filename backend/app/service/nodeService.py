@@ -1,4 +1,4 @@
-from ..repository.nodeRepository import NodeRepository
+from ..repository.nodeRepo import NodeRepository
 
 class NodeService:
     @staticmethod

@@ -53,12 +53,12 @@ class ConfigTableRepository:
             db.commit()
         finally:
             close_db()
-        @staticmethod
-        def delete(config_table_id: int) -> None:
-            try:
-                db = get_db()
-                cursor = db.cursor()
-                cursor.execute("DELETE FROM config_tables WHERE id = ?", (config_table_id,))
-                db.commit()
-            finally:
-                close_db()
+    @staticmethod
+    def delete(config_table_id: int) -> None:
+        try:
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute("DELETE FROM config_tables WHERE id = ?", (config_table_id,))
+            db.commit()
+        finally:
+            close_db()

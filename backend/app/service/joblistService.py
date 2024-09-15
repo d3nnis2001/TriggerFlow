@@ -1,4 +1,4 @@
-from ..repository.joblistRepository import JoblistRepository
+from ..repository.joblistRepo import JoblistRepository
 
 class JoblistService:
     @staticmethod

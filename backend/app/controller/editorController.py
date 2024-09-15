@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import subprocess
-from app.service.editor_service import EditorService
+from ..service.editorService import EditorService
 
 editor_bp = Blueprint('editor', __name__, url_prefix='/api/editor')
 
