@@ -5,6 +5,7 @@ from .edgeRepo import EdgeRepository
 from .nodeRepo import NodeRepository
 from .scheduleRepo import ScheduleRepository
 from .configRepo import ConfigTableRepository
+from .variableRepo import GlobalVariableRepository
 
 __all__ = [
     'UserRepository',
@@ -13,5 +14,6 @@ __all__ = [
     'EdgeRepository',
     'NodeRepository',
     'ScheduleRepository',
-    'ConfigTableRepository'
+    'ConfigTableRepository',
+    'GlobalVariableRepository'
 ]

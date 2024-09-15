@@ -26,4 +26,7 @@ def create_app(config_class=Config):
     from .controller.jobController import job_bp
     app.register_blueprint(job_bp)
 
+    from .controller.variableController import global_variable_bp
+    app.register_blueprint(global_variable_bp)
+
     return app
