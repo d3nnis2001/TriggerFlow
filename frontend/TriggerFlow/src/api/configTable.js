@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Create a new config table
-export const createTable = async function createTable(jobId, tableName, tableData) {
+export const createTable = async function createTable(table_id, jobId, tableName, tableData) {
     try {
         const payload = {
             job_id: jobId,
@@ -9,7 +9,7 @@ export const createTable = async function createTable(jobId, tableName, tableDat
             table_data: JSON.stringify(tableData)
         };
 
-        return await axios.post("/api/config-tables", payload);
+        return await axios.post(`/api/config-tables/${table_id}`, payload);
     } catch (error) {
         console.error("Error when creating table:", error);
         return false;
@@ -52,7 +52,7 @@ export const updateTable = async function updateTable(tableId, jobId, tableName,
 };
 
 // Delete a table by table ID
-export const deleteTable = async function deleteTable(tableId) {
+export const deleteTableBack = async function deleteTableBack(tableId) {
     try {
         return await axios.delete(`/api/config-tables/${tableId}`);
     } catch (error) {

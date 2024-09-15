@@ -1,13 +1,18 @@
 <template>
   <Dialog :visible="visible" @update:visible="$emit('update:visible', $event)" :modal="true" :header="'Konfigurationstabellen'" class="w-4/5 h-4/5 max-w-6xl">
     <div class="flex h-full bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <!-- Benachrichtigungskomponente -->
+      <div v-if="notification.show" class="fixed top-4 right-4 p-4 rounded-md text-white" :class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'">
+        {{ notification.message }}
+      </div>
+
       <!-- Linke Seitenleiste -->
       <div class="w-64 bg-gradient-to-b from-gray-800 to-gray-700 p-4 overflow-y-auto">
         <h3 class="text-xl font-bold mb-4">Tabellen</h3>
         <ul class="space-y-2">
           <li v-for="table in tables" :key="table.id" @click="selectTable(table)" class="flex justify-between items-center cursor-pointer hover:bg-gray-700 p-2 rounded">
             {{ table.name }}
-            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text" @click.stop="deleteTable(table)" />
+            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text" @click.stop="confirmDeleteTable(table)" />
           </li>
         </ul>
         <Button label="Neue Tabelle" icon="pi pi-plus" @click="createNewTable" class="mt-4 w-full bg-emerald-500 hover:bg-emerald-600" />
@@ -23,7 +28,7 @@
           <div class="p-4">
             <div class="mb-4">
               <label for="tableName" class="block mb-2">Tabellenname:</label>
-              <InputText id="tableName" v-model="currentTable.name" class="w-full bg-gray-700 text-white" @input="ensureUniqueTableName" />
+              <InputText id="tableName" v-model="currentTable.name" class="w-full bg-gray-700 text-white" @input="updateTableName" />
             </div>
           </div>
 
@@ -61,7 +66,7 @@
                 <Button label="Zeile -" icon="pi pi-minus" @click="removeRow" :disabled="currentTable.data.length <= 10" class="bg-green-500 hover:bg-green-600" />
               </div>
             </div>
-            <Button label="Speichern" icon="pi pi-save" @click="saveTable" class="w-full bg-emerald-500 hover:bg-emerald-600" />
+            <Button label="Speichern" icon="pi pi-save" @click="saveCurrentTable" class="w-full bg-emerald-500 hover:bg-emerald-600" />
           </div>
         </template>
       </div>
@@ -76,11 +81,13 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { createTable, getAllTablesByJob } from "@/api/configTable.js";
+import {createTable, getAllTablesByJob, deleteTableBack, updateTable} from "@/api/configTable.js";
 
 const props = defineProps({
   visible: Boolean
 });
+
+const job_id = 1;
 
 const emit = defineEmits(['update:visible']);
 
@@ -92,9 +99,24 @@ const currentTable = reactive({
   data: []
 });
 
+const notification = reactive({
+  show: false,
+  message: '',
+  type: 'success'
+});
+
+const showNotification = (message, type = 'success') => {
+  notification.show = true;
+  notification.message = message;
+  notification.type = type;
+  setTimeout(() => {
+    notification.show = false;
+  }, 3000);
+};
+
 // Funktion, um Tabellen von der API zu laden
 const loadTables = async () => {
-  const response = await getAllTablesByJob(1);
+  const response = await getAllTablesByJob(job_id);
   tables.value = response.data.map((tableData, index) => {
     const jsonObject = JSON.parse(tableData.table_data.replace(/'/g, '"'));
     const columns = Object.keys(jsonObject[0]).map(key => ({
@@ -102,7 +124,7 @@ const loadTables = async () => {
       header: key
     }));
     return {
-      id: index,
+      id: tableData.id,
       name: tableData.table_name,
       columns: columns,
       data: jsonObject.map((row, rowIndex) => ({
@@ -112,6 +134,7 @@ const loadTables = async () => {
     };
   });
 };
+
 onMounted(() => {
   loadTables();
 });
@@ -136,18 +159,25 @@ const createNewTable = () => {
     return row;
   });
   tables.value.push({...currentTable});
+  saveTable();
 };
 
-// Tabelle auswählen
-const selectTable = (table) => {
-  Object.assign(currentTable, table);
+// Bestätigung vor dem Löschen der Tabelle
+const confirmDeleteTable = (table) => {
+  if (confirm(`Möchten Sie die Tabelle "${table.name}" wirklich löschen?`)) {
+    deleteTable(table);
+  }
 };
 
 // Tabelle löschen
-const deleteTable = (table) => {
+const deleteTable = async (table) => {
   const index = tables.value.findIndex(t => t.id === table.id);
   if (index !== -1) {
     tables.value.splice(index, 1);
+    const resp = await deleteTableBack(table.id);
+    if (resp === 200) {
+      showNotification("Tabelle erfolgreich gelöscht");
+    }
   }
   if (currentTable.id === table.id) {
     if (tables.value.length > 0) {
@@ -156,6 +186,20 @@ const deleteTable = (table) => {
       Object.assign(currentTable, {id: null, name: '', columns: [], data: []});
     }
   }
+};
+
+const saveTable = async () => {
+  try {
+    const response = await createTable(currentTable.id, 1, currentTable.name, currentTable.data);
+    showNotification("Tabelle erfolgreich gespeichert");
+  } catch (error) {
+    showNotification("Fehler beim Speichern der Tabelle", "error");
+  }
+};
+
+// Tabelle auswählen
+const selectTable = (table) => {
+  Object.assign(currentTable, table);
 };
 
 // Spalte hinzufügen
@@ -202,28 +246,32 @@ const onCellEditComplete = (event) => {
 
 // Tabellenkopf aktualisieren
 const updateColumnHeader = (index, event) => {
-  currentTable.columns[index].header = event.target.value;
+  const newHeader = event.target.value;
+  currentTable.columns[index].header = newHeader;
+  const newField = newHeader.toLowerCase().replace(/\s+/g, '_');
+  const oldField = currentTable.columns[index].field;
+  currentTable.columns[index].field = newField;
+  currentTable.data.forEach(row => {
+    row[newField] = row[oldField];
+    delete row[oldField];
+  });
 };
 
-// Tabelle speichern
-const saveTable = async () => {
+// Tabellenname aktualisieren
+const updateTableName = () => {
+  const index = tables.value.findIndex(t => t.id === currentTable.id);
+  if (index !== -1) {
+    tables.value[index].name = currentTable.name;
+  }
+};
+
+// Aktuelle Tabelle speichern
+const saveCurrentTable = async () => {
   try {
-    const response = await createTable(1, currentTable.name, currentTable.data);
-    console.log("Table saved:", response);
-    await loadTables(); // Reload tables after saving
+    await updateTable(currentTable.id, job_id, currentTable.name, currentTable.data);
+    showNotification("Tabelle erfolgreich aktualisiert");
   } catch (error) {
-    console.error("Error saving table:", error);
+    showNotification("Fehler beim Aktualisieren der Tabelle", "error");
   }
-};
-
-// Sicherstellen, dass der Tabellenname einzigartig ist
-const ensureUniqueTableName = () => {
-  let newName = currentTable.name;
-  let counter = 1;
-  while (tables.value.some(table => table.id !== currentTable.id && table.name === newName)) {
-    counter++;
-    newName = `${currentTable.name} ${counter}`;
-  }
-  currentTable.name = newName;
 };
 </script>

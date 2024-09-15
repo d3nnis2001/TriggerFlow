@@ -17,10 +17,10 @@ INSERT INTO users (first_name, last_name, email, password, role, firma) VALUES (
 
 -- Jobs table
 CREATE TABLE jobs (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, erstellungs_datum DATETIME DEFAULT CURRENT_TIMESTAMP, author_id INTEGER NOT NULL, firma TEXT NOT NULL, description TEXT, FOREIGN KEY (author_id) REFERENCES users(id));
-INSERT INTO jobs (name, author_id, firma, description) VALUES ('Data Processing Job', 1, 'ACME Corp', 'This job processes daily sales data');
+INSERT INTO jobs (name,image ,  author_id, firma, description) VALUES ('Data Processing Job', 'Image here beeach :D', 1, 'ACME Corp', 'This job processes daily sales data');
 
 -- Configuration tables
-CREATE TABLE config_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, job_id INTEGER NOT NULL, table_name TEXT NOT NULL, table_data TEXT NOT NULL, FOREIGN KEY (job_id) REFERENCES jobs(id));
+CREATE TABLE config_tables (id INTEGER PRIMARY KEY not null, job_id INTEGER NOT NULL, table_name TEXT NOT NULL, table_data TEXT NOT NULL, FOREIGN KEY (job_id) REFERENCES jobs(id));
 INSERT INTO config_tables (job_id, table_name, table_data) VALUES (1, 'Sales Data', '{"columns": ["Date", "Product", "Amount"], "data": [["2023-05-01", "Widget A", 100]]}');
 
 -- Global variables
