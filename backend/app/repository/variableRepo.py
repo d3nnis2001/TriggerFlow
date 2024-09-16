@@ -1,5 +1,7 @@
 from typing import List, Dict, Any, Optional
 from ..database import get_db, close_db
+import json
+
 
 class GlobalVariableRepository:
     @staticmethod
@@ -9,8 +11,8 @@ class GlobalVariableRepository:
             cursor = db.cursor()
             cursor.execute("""
                 INSERT INTO global_variables (job_id, variable_data)
-                VALUES (?, ?, ?)
-            """, (global_variable['job_id'], global_variable['variable_data']))
+                VALUES (?, ?)
+            """, (global_variable['job_id'], json.dumps(global_variable['variable_data'])))
             db.commit()
             return cursor.lastrowid
         finally:
@@ -23,12 +25,12 @@ class GlobalVariableRepository:
             cursor = db.cursor()
             cursor.execute("SELECT * FROM global_variables WHERE job_id = ?", (job_id,))
             variables = cursor.fetchall()
-            return [dict(variable) for variable in variables]
+            return [{'id': var['id'], 'job_id': var['job_id'], 'variable_data': json.loads(var['variable_data'])} for var in variables]
         finally:
             close_db()
 
     @staticmethod
-    def update(job_id: int, variable_data: str) -> None:
+    def update(job_id: int, variable_data: List[Dict[str, str]]) -> None:
         try:
             db = get_db()
             cursor = db.cursor()
@@ -36,7 +38,7 @@ class GlobalVariableRepository:
                 UPDATE global_variables
                 SET variable_data = ?
                 WHERE job_id = ?
-            """, (job_id, variable_data))
+            """, (json.dumps(variable_data), job_id))
             db.commit()
         finally:
             close_db()

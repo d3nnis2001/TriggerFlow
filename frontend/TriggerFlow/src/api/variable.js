@@ -10,11 +10,10 @@ export const getGlobalVariables = async function(jobId) {
     }
 };
 
-export const createGlobalVariable = async function(jobId, variableName, variableValue) {
+export const createGlobalVariable = async function(jobId, variableData) {
     try {
         const response = await axios.post(`/api/global-variables/${jobId}`, {
-            variable_name: variableName,
-            variable_value: variableValue
+            variable_data:  JSON.stringify(variableData),
         });
         return response.data;
     } catch (error) {
@@ -23,11 +22,10 @@ export const createGlobalVariable = async function(jobId, variableName, variable
     }
 };
 
-export const updateGlobalVariable = async function(jobId, variableName, variableValue) {
+export const updateGlobalVariable = async function(jobId, variableData) {
     try {
         const response = await axios.put(`/api/global-variables/${jobId}`, {
-            variable_name: variableName,
-            variable_value: variableValue
+            variable_data: JSON.stringify(variableData),
         });
         return response.data;
     } catch (error) {
