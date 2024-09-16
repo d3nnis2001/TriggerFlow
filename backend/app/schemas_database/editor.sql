@@ -24,8 +24,8 @@ CREATE TABLE config_tables (id INTEGER PRIMARY KEY not null, job_id INTEGER NOT 
 INSERT INTO config_tables (job_id, table_name, table_data) VALUES (1, 'Sales Data', '{"columns": ["Date", "Product", "Amount"], "data": [["2023-05-01", "Widget A", 100]]}');
 
 -- Global variables
-CREATE TABLE global_variables (id INTEGER PRIMARY KEY AUTOINCREMENT, job_id INTEGER NOT NULL, variable_name TEXT NOT NULL, variable_value TEXT, FOREIGN KEY (job_id) REFERENCES jobs(id));
-INSERT INTO global_variables (job_id, variable_name, variable_value) VALUES (1, 'MAX_RETRIES', '3');
+CREATE TABLE global_variables (id INTEGER PRIMARY KEY AUTOINCREMENT, job_id INTEGER NOT NULL, variable_data TEXT NOT NULL, FOREIGN KEY (job_id) REFERENCES jobs(id));
+INSERT INTO global_variables (job_id, variable_data) VALUES (1, 'MAX_RETRIES');
 
 -- Nodes
 CREATE TABLE nodes (id INTEGER PRIMARY KEY AUTOINCREMENT, job_id INTEGER NOT NULL, node_type TEXT NOT NULL, position_x REAL NOT NULL, position_y REAL NOT NULL, additional_info TEXT, FOREIGN KEY (job_id) REFERENCES jobs(id));

@@ -8,9 +8,9 @@ class GlobalVariableRepository:
             db = get_db()
             cursor = db.cursor()
             cursor.execute("""
-                INSERT INTO global_variables (job_id, variable_name, variable_value)
+                INSERT INTO global_variables (job_id, variable_data)
                 VALUES (?, ?, ?)
-            """, (global_variable['job_id'], global_variable['variable_name'], global_variable['variable_value']))
+            """, (global_variable['job_id'], global_variable['variable_data']))
             db.commit()
             return cursor.lastrowid
         finally:
@@ -28,15 +28,15 @@ class GlobalVariableRepository:
             close_db()
 
     @staticmethod
-    def update(job_id: int, variable_name: str, variable_value: str) -> None:
+    def update(job_id: int, variable_data: str) -> None:
         try:
             db = get_db()
             cursor = db.cursor()
             cursor.execute("""
                 UPDATE global_variables
-                SET variable_value = ?
-                WHERE job_id = ? AND variable_name = ?
-            """, (variable_value, job_id, variable_name))
+                SET variable_data = ?
+                WHERE job_id = ?
+            """, (job_id, variable_data))
             db.commit()
         finally:
             close_db()
