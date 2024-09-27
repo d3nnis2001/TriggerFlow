@@ -5,10 +5,7 @@ nodes_bp = Blueprint('nodes', __name__, url_prefix='/api/nodes')
 
 @nodes_bp.route('/uploadFiles', methods=['POST'])
 def upload_files():
-    print("Hey")
-    print(request.files)
     files = request.files.getlist('demo[]')
-    print(files)
     
     if not files or files[0].filename == '':
         return jsonify({"error": "No selected file"}), 400

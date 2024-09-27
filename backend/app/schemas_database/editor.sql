@@ -7,7 +7,7 @@ CREATE TABLE user ( id integer primary key, first_name text not null, last_name 
 
 -- Insert query for inserting a new user
 insert into user (id, first_name, last_name, email, password, role, firma) VALUES (1, 'Dennis', 'Schielke', 'd3nnis.s@web.de', 'admin123', 'admin', 'TriggerYou GmbH');
-CREATE TABLE jobs (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, image TEXT NOT NULL, erstellungs_datum DATETIME DEFAULT CURRENT_TIMESTAMP, author_id INTEGER NOT NULL, firma TEXT NOT NULL, description TEXT, FOREIGN KEY (author_id) REFERENCES users(id));
+CREATE TABLE jobs (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, image TEXT NOT NULL, erstellungs_datum DATETIME DEFAULT CURRENT_TIMESTAMP, firma TEXT NOT NULL, description);
 -- Job schema
 CREATE TABLE job (id INTEGER primary key AUTOINCREMENT, name text not null, image text not null, date date not null, author text not null, firma text not null, description text);
 

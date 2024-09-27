@@ -7,3 +7,7 @@ class JoblistService:
         if len(jobs) == 0:
             return False, 'No Jobs existing'
         return jobs
+    
+    @staticmethod 
+    def createJob(name, desc, comp, image):
+        return JoblistRepository.create(name, image, comp, desc)
